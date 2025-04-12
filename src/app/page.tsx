@@ -1,9 +1,16 @@
 "use client"
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, Upload, Loader2, Github } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,101 +22,115 @@ export default function Home() {
     fetchData();
   }, [])
 
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // Run handleUpload when file changes
+  useEffect(() => {
+    if (file) {
+      handleUpload();
+    }
+  }, [file]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+
+      // Check if file is a CSV
+      if (selectedFile.type === "text/csv" || selectedFile.name.endsWith('.csv')) {
+        setFile(selectedFile);
+        toast.success("CSV file selected", {
+          description: selectedFile.name,
+        });
+      } else {
+        // Show toast for invalid file type
+        toast.error("Invalid file type", {
+          description: "Please upload a CSV file",
+        });
+
+        // Reset the file input
+        e.target.value = '';
+      }
+    }
+  };
+
+  const handleUpload = async () => {
+    if (file && !isLoading) {
+      setIsLoading(true);
+
+      try {
+        console.log("Processing file:", file.name);
+        toast.success("Processing file", {
+          description: file.name,
+        });
+
+        // Simulate processing time
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Implement your file upload/processing functionality here
+
+        toast.success("File processed successfully", {
+          description: file.name,
+        });
+      } catch (error) {
+        toast.error("Error processing file", {
+          description: "An unexpected error occurred",
+        });
+        console.error("Error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (!file) {
+      console.log("No file selected");
+      toast.error("No file selected", {
+        description: "Please select a CSV file to upload",
+      });
+    }
+  };
+
+  return (
+    <div className="bg-white grid grid-rows-[56px_1fr_56px] items-center justify-items-center min-h-screen font-[family-name:var(--font-geist-sans)]">      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+      <p className="text-5xl">DataVision</p>
+
+      <div className="flex flex-col w-full max-w-md gap-4">
+        <div className="flex items-center gap-2">
+          <Input
+            type="file"
+            id="fileUpload"
+            className="hidden"
+            accept=".csv,text/csv"
+            onChange={handleFileChange}
+            disabled={isLoading}
+          />
+          <label
+            htmlFor="fileUpload"
+            className={`m-auto cursor-pointer flex items-center px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <Upload className="h-4 w-4 mr-2" />
+            Upload CSV
+          </label>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+
+        {isLoading && (
+          <div className="flex items-center justify-center text-center text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Processing your CSV file...
+          </div>
+        )}
+      </div>
+    </main>
+      <footer className="bg-gray-200 w-full h-14 row-start-3 flex items-center justify-center">
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          className="gap-2 text-gray-600 flex items-center hover:underline hover:underline-offset-4"
+          href="https://www.aadiananddeveloper05.com"
           target="_blank"
           rel="noopener noreferrer"
         >
           <Image
             aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
+            src="/github-logo.svg"
             alt="Globe icon"
             width={16}
             height={16}
           />
-          Go to nextjs.org →
+          GitHub Repository
         </a>
       </footer>
     </div>
