@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -31,7 +31,10 @@ export default function Home() {
       const selectedFile = e.target.files[0];
 
       // Check if file is a CSV
-      if (selectedFile.type === "text/csv" || selectedFile.name.endsWith('.csv')) {
+      if (
+        selectedFile.type === "text/csv" ||
+        selectedFile.name.endsWith(".csv")
+      ) {
         setFile(selectedFile);
         toast.success("CSV file selected", {
           description: selectedFile.name,
@@ -43,7 +46,7 @@ export default function Home() {
         });
 
         // Reset the file input
-        e.target.value = '';
+        e.target.value = "";
       }
     }
   };
@@ -88,31 +91,32 @@ export default function Home() {
         <p>{demoText}</p>
 
         <div className="flex flex-col w-full max-w-md gap-4">
+          <div className="flex items-center gap-2">
+            <Input
+              type="file"
+              id="fileUpload"
+              className="hidden"
+              accept=".csv,text/csv"
+              onChange={handleFileChange}
+              disabled={isLoading}
+            />
+            <label
+              htmlFor="fileUpload"
+              className={`m-auto cursor-pointer flex items-center px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 ${
+                isLoading ? "opacity-50 pointer-events-none" : ""
+              }`}
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Upload CSV
+            </label>
+          </div>
 
-          {isLoading ?
-            <div className="flex flex-col gap-2 items-center justify-center text-center text-sm text-primary/80">
+          {isLoading && (
+            <div className="flex items-center justify-center text-center text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               Processing your CSV file...
             </div>
-            :
-            <div className="flex items-center gap-2">
-              <Input
-                type="file"
-                id="fileUpload"
-                className="hidden"
-                accept=".csv,text/csv"
-                onChange={handleFileChange}
-                disabled={isLoading}
-              />
-              <label
-                htmlFor="fileUpload"
-                className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
-              >
-                <Upload className="h-8 aspect-square" />
-                Upload CSV
-              </label>
-            </div>
-          }
+          )}
         </div>
       </main>
       <footer className="bg-gray-200 w-full h-14 row-start-3 flex items-center justify-center">
