@@ -23,13 +23,29 @@ llm = GoogleGenerativeAI(
     temperature=0.7,
 )
 
-prompt_template = PromptTemplate.from_template("""
-Generate python code for hypothesis testing for the following features using matplotlib, pandas, scipy, seaborn, and can u limit the output to only be code and nothing else: {input}
+code_ht_prompt_template = PromptTemplate.from_template("""
+
+    You are an expert data scientist. Your task is to generate python code for hypothesis 
+    testing for relationships between certain features in a dataframe. The code should run the test,
+    calculating the p value, test statistic, and display the results in an appropriate graph. You 
+    will be provided with the following things: 
+        1. a list of features with which hypothesis tests to conduct for each features
+        2. an overview of the dataframe you are working with
+    
+    Your output should be a python function that performs this hypothesis testing and visualization.
+    You should use matplotlib, scipy, pandas, and seaborn for this.
+    Return only the code and no additional text. 
+    
+    Here is the list of features: 
+    {features}
+    
+    Here is an overview of the dataframe:
+    {overview}
 """)
 def run_hypothesis_analysis(df, input_features, llm):
     try:
         # Format the prompt
-        prompt = prompt_template.format(input=input_features)
+        prompt = code_ht_prompt_template.format(features=input_features, overview=utils.overview_data(df))
 
         # Get generated code
         response = llm.invoke(prompt)
