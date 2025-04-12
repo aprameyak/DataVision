@@ -1,65 +1,119 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DropDown from "@/components/ui/dropDown";
-
-
-//import { useRouter } from 'next/navigation'
+import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
+import AnalysisHeader from "@/components/analysisHeader";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
 interface AnalysisProps {
-  cleaned: boolean;
-  designed: boolean;
-  visualized: boolean;
-  analyzed: boolean;
+  cleanResult: Record<string, any> | null;
+  designResult: string | null;
+  hypothesisTestingResult: string | null;
+  analyzeResult: string | null;
+  currentStep: number;
 }
 
 export default function Analysis({
-  cleaned,
-  designed,
-  visualized,
-  analyzed,
+  cleanResult,
+  designResult,
+  hypothesisTestingResult,
+  analyzeResult,
+  currentStep,
 }: AnalysisProps) {
-  const [clicked, setClicked] = useState(0);
   const tempData =
     "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
 
+  const [cleanSummary, setCleanSummary] = useState<string | null>(null);
+  const [codeForCleaning, setCodeForCleaning] = useState<string | null>(null);
 
+  const downloadCSV = () => {
+    if (cleanResult && cleanResult.csv) {
+      const blob = new Blob([cleanResult.csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "cleaned_data.csv"; // Name of the downloaded file
+      a.click();
+      URL.revokeObjectURL(url); // Clean up the URL object
+    } else {
+      console.error("No CSV data available for download");
+    }
+  };
+
+  useEffect(() => {
+    if (cleanResult) {
+      setCleanSummary(cleanResult["summary"]);
+      setCodeForCleaning(cleanResult["code"]);
+    } else {
+      setCleanSummary(null);
+      setCodeForCleaning(null);
+    }
+    console.log("Summary: ", cleanSummary);
+  }, [cleanResult]);
+
+  const CodeDisplay = ({ code }: { code: string | null }) => {
+    if (!code) {
+      return <p>No code available</p>;
+    }
+    return <SyntaxHighlighter language="javascript">{code}</SyntaxHighlighter>;
+  };
+
+  const CleaningStepData = (
+    <div className="flex flex-col gap-2">
+      <span className="font-bold">Summary:</span>
+      <p>{cleanSummary}</p>
+      <span className="font-bold">Code:</span>
+      <CodeDisplay code={codeForCleaning} />
+      <Button onClick={downloadCSV} className="mt-4">
+        Download CSV
+      </Button>
+    </div>
+  );
+
+  const DesignStepData = (
+    <div className="flex flex-col gap-2">
+      <span className="font-bold">Proposed Procedure:</span>
+      <p>{designResult}</p>
+    </div>
+  );
 
   return (
     <div className="w-full">
-      <button
+      {/* <button
         className="bg-blue-500 text-white px-4 py-2 rounded"
         onClick={() => setClicked(clicked + 1)}
       >
         clean
-      </button>
+      </button> */}
 
       {/* temporarly based on clicked variable need to add ani*/}
       <DropDown
-        text="Cleaning data"
-        clicked={clicked}
+        text="Cleaning Data"
+        clicked={currentStep}
         phaseNum={0}
-        data={tempData}
+        data={CleaningStepData}
       />
-      {clicked > 0 && (
+      {currentStep > 0 && (
         <DropDown
-          text="Finding Patterns"
-          clicked={clicked}
+          text="Designing Analysis Procedure"
+          clicked={currentStep}
           phaseNum={1}
-          data={tempData}
+          data={DesignStepData}
         />
       )}
-      {clicked > 1 && (
+      {currentStep > 1 && (
         <DropDown
           text="Running Statistical Tests"
-          clicked={clicked}
+          clicked={currentStep}
           phaseNum={2}
           data={tempData}
         />
       )}
-      {clicked > 2 && (
+      {currentStep > 2 && (
         <DropDown
           text="Found Data!"
-          clicked={clicked}
+          clicked={currentStep}
           phaseNum={3}
           data={tempData}
         />

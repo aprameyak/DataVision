@@ -11,6 +11,11 @@ import AnalysisHeader from "@/components/analysisHeader";
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [cleanResult, setCleanResult] = useState(null);
+  const [designResult, setDesignResult] = useState<string | null>(null);
+  const [hypothesisTestingResult, setHypothesisTestingResult] = useState(null);
+  const [analyzeResult, setAnalyzeResult] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const cleanData = async () => {
     const url = "/api/data_cleaning";
@@ -27,6 +32,8 @@ export default function Home() {
       }
 
       const result = await response.json();
+      setCleanResult(result);
+      setCurrentStep(1);
       console.log("Cleaning Step:", result);
     } catch (error) {
       console.error("Error:", error);
@@ -48,7 +55,41 @@ export default function Home() {
       }
 
       const result = await response.text();
+      setDesignResult(result);
+      setCurrentStep(2);
       console.log("Analysis Procedure:", result);
+      return result;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const hypothesisTest = async (designResult: string | null) => {
+    const url = "/api/hypothesis_test";
+    console.log("DESIGN RESULT: ", designResult);
+    try {
+      const formData = new FormData();
+      formData.append("file", file as Blob);
+
+      if (designResult) {
+        formData.append("designResult", designResult);
+      } else {
+        console.error("Design result is missing");
+        return;
+      }
+
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      setHypothesisTestingResult(result);
+      console.log("Hypothesis Test:", result);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -97,7 +138,8 @@ export default function Home() {
         });
 
         await cleanData();
-        await designProcedure();
+        const designRes = await designProcedure();
+        await hypothesisTest(designRes ?? null);
 
         // Implement your file upload/processing functionality here
         toast.success("File processed successfully", {
@@ -165,10 +207,11 @@ export default function Home() {
         <div className="flex flex-col gap-2 w-2/3 h-screen items-center justify-center">
           <AnalysisHeader />
           <Analysis
-            cleaned={true}
-            designed={true}
-            visualized={true}
-            analyzed={true}
+            cleanResult={cleanResult}
+            designResult={designResult}
+            hypothesisTestingResult={hypothesisTestingResult}
+            analyzeResult={analyzeResult}
+            currentStep={currentStep}
           />
         </div>
       )}
