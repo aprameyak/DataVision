@@ -1,9 +1,12 @@
-"use client";
-import { useState, useEffect } from "react";
+'use client';
+
+import { useState, useEffect, useRef } from "react";
 import DropDown from "@/components/dropDown";
 import { Button } from "@/components/ui/button";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import ImageDropDown from "./ui/imageDropDown";
+import { Input } from "@/components/ui/input";
+import { Send, Paperclip } from "lucide-react";
 
 interface AnalysisProps {
   cleanResult: Record<string, any> | null;
@@ -13,19 +16,37 @@ interface AnalysisProps {
   currentStep: number;
 }
 
+interface Message {
+  id: string;
+  content: string;
+  role: 'user' | 'assistant';
+  timestamp: Date;
+}
+
 export default function Analysis({
   cleanResult,
   designResult,
   hypothesisTestingResult,
   analyzeResult,
   currentStep,
-  
 }: AnalysisProps) {
   const tempData =
     "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
-
   const [cleanSummary, setCleanSummary] = useState<string | null>(null);
   const [codeForCleaning, setCodeForCleaning] = useState<string | null>(null);
+  
+  // Chat state
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      content: "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
+      role: 'assistant',
+      timestamp: new Date()
+    }
+  ]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const downloadCSV = () => {
     if (cleanResult && cleanResult.csv) {
@@ -40,7 +61,7 @@ export default function Analysis({
       console.error("No CSV data available for download");
     }
   };
-
+  
   useEffect(() => {
     if (cleanResult) {
       setCleanSummary(cleanResult["summary"]);
@@ -52,13 +73,87 @@ export default function Analysis({
     console.log("Summary: ", cleanSummary);
   }, [cleanResult]);
 
+  // Scroll to bottom of chat whenever messages update
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const sendMessage = async () => {
+    if (!inputMessage.trim()) return;
+    
+    // Create new message object
+    const newUserMessage: Message = {
+      id: Date.now().toString(),
+      content: inputMessage,
+      role: 'user',
+      timestamp: new Date()
+    };
+    
+    // Update messages with user's message
+    setMessages(prev => [...prev, newUserMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+    
+    try {
+      // Replace with your actual API endpoint
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: inputMessage,
+          currentStep: currentStep,
+          history: messages.map(msg => ({ role: msg.role, content: msg.content }))
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to get response');
+      }
+      
+      const data = await response.json();
+      
+      // Add assistant's response to messages
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: data.message || "Sorry, I couldn't process your request.",
+        role: 'assistant',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      // Add error message
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "Sorry, there was an error processing your request. Please try again.",
+        role: 'assistant',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
   const CodeDisplay = ({ code }: { code: string | null }) => {
     if (!code) {
       return <p>No code available</p>;
     }
     return <SyntaxHighlighter language="javascript">{code}</SyntaxHighlighter>;
   };
-
+  
   const CleaningStepData = (
     <div className="flex flex-col gap-2">
       <span className="font-bold">Summary:</span>
@@ -70,24 +165,16 @@ export default function Analysis({
       </Button>
     </div>
   );
-
+  
   const DesignStepData = (
     <div className="flex flex-col gap-2">
       <span className="font-bold">Proposed Procedure:</span>
       <p>{designResult}</p>
     </div>
   );
-
+  
   return (
     <div className="w-full">
-      {/* <button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={() => setClicked(clicked + 1)}
-      >
-        clean
-      </button> */}
-
-      {/* temporarly based on clicked variable need to add ani*/}
       <DropDown
         text="Cleaning Data"
         clicked={currentStep}
@@ -119,6 +206,63 @@ export default function Analysis({
         />
       )}
       
+      {/* Chat Interface */}
+      <div className="mt-8 border rounded-lg shadow-md">
+        <div className="bg-gray-100 p-4 rounded-t-lg border-b">
+          <h3 className="font-semibold text-gray-800">Data Analysis Assistant</h3>
+        </div>
+        
+        <div className="h-80 overflow-y-auto p-4 space-y-4">
+          {messages.map((message) => (
+            <div 
+              key={message.id} 
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div 
+                className={`max-w-3/4 p-3 rounded-lg ${
+                  message.role === 'user' 
+                    ? 'bg-blue-500 text-white rounded-br-none' 
+                    : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                }`}
+              >
+                {message.content}
+                <div className={`text-xs mt-1 ${message.role === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
+                  {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                </div>
+              </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-gray-200 text-gray-800 p-3 rounded-lg rounded-bl-none">
+                <div className="flex space-x-2">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+        
+        <div className="p-3 border-t flex gap-2">
+          <Button variant="outline" size="icon" className="shrink-0">
+            <Paperclip className="h-5 w-5" />
+          </Button>
+          <Input
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            onKeyDown={handleKeyPress}
+            placeholder="Type your message..."
+            className="flex-1"
+          />
+          <Button onClick={sendMessage} disabled={isLoading || !inputMessage.trim()} className="shrink-0">
+            <Send className="h-5 w-5 mr-1" />
+            Send
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
