@@ -1,9 +1,7 @@
 "use client";
 import { useState } from "react";
 import DropDown from "@/components/ui/dropDown";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
-import AnalysisHeader from "@/components/analysisHeader";
+
 
 //import { useRouter } from 'next/navigation'
 
@@ -23,6 +21,8 @@ export default function Analysis({
   const [clicked, setClicked] = useState(0);
   const tempData =
     "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
+
+
 
   return (
     <div className="w-full">
@@ -64,6 +64,8 @@ export default function Analysis({
           data={tempData}
         />
       )}
+      
+    
     </div>
   );
 }
