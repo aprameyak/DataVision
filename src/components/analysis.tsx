@@ -1,9 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import DropDown from "@/components/ui/dropDown";
+import DropDown from "@/components/dropDown";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
-import AnalysisHeader from "@/components/analysisHeader";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import ImageDropDown from "./ui/imageDropDown";
 
@@ -121,7 +119,6 @@ export default function Analysis({
         />
       )}
       
-    
     </div>
   );
 }
