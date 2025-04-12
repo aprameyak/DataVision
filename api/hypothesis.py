@@ -9,19 +9,6 @@ from langchain_google_genai import GoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 import utils
 
-
-load_dotenv()
-
-api_key = os.getenv("GEMINI_API_KEY")
-
-llm = GoogleGenerativeAI(
-    model="gemini-2.0-flash",
-    google_api_key=api_key,
-    temperature=0.7,
-)
-
-df = pd.read_csv("customers-100.csv")
-
 hypothesis_testing_prompt_template = PromptTemplate.from_template("""
     You are an expert data scientist. Your task is to write a function that conducts a series of 
     hypothesis tests on a dataframe, examining the relationships between different columns in the 
@@ -76,17 +63,3 @@ def hypothesis_testing(df, llm, instructions):
             return "Hypothesis testing function not found in generated code."
     except Exception as e:
         return "Error running generated hypothesis testing code:" + str(e)
-
-
-
-test_procedure = """
-
-Analysis Results:
-Relationship between Country and Company. Hypothesis test: Chi-squared test.
-Relationship between Country and Subscription Date. Hypothesis test: ANOVA.
-Relationship between City and Company. Hypothesis test: Chi-squared test.
-Relationship between Subscription Date and Company. Hypothesis test: ANOVA.
-
-"""
-
-print(hypothesis_testing(df, llm, test_procedure))

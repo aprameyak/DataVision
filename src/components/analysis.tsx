@@ -9,7 +9,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 interface AnalysisProps {
   cleanResult: Record<string, any> | null;
   designResult: string | null;
-  visualizeResult: string | null;
+  hypothesisTestingResult: string | null;
   analyzeResult: string | null;
   currentStep: number;
 }
@@ -17,7 +17,7 @@ interface AnalysisProps {
 export default function Analysis({
   cleanResult,
   designResult,
-  visualizeResult,
+  hypothesisTestingResult,
   analyzeResult,
   currentStep,
 }: AnalysisProps) {
