@@ -4,8 +4,7 @@ import DropDown from "@/components/ui/dropDown";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import AnalysisHeader from "@/components/analysisHeader";
-
-//import { useRouter } from 'next/navigation'
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
 interface AnalysisProps {
   cleanResult: Record<string, any> | null;
@@ -53,12 +52,19 @@ export default function Analysis({
     console.log("Summary: ", cleanSummary);
   }, [cleanResult]);
 
+  const CodeDisplay = ({ code }: { code: string | null }) => {
+    if (!code) {
+      return <p>No code available</p>;
+    }
+    return <SyntaxHighlighter language="javascript">{code}</SyntaxHighlighter>;
+  };
+
   const CleaningStepData = (
     <div className="flex flex-col gap-2">
       <span className="font-bold">Summary:</span>
       <p>{cleanSummary}</p>
       <span className="font-bold">Code:</span>
-      <p>{codeForCleaning}</p>
+      <CodeDisplay code={codeForCleaning} />
       <Button onClick={downloadCSV} className="mt-4">
         Download CSV
       </Button>
