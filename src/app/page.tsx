@@ -11,6 +11,10 @@ import AnalysisHeader from "@/components/analysisHeader";
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [cleanResult, setCleanResult] = useState(null);
+  const [designResult, setDesignResult] = useState(null);
+  const [visualizeResult, setVisualizeResult] = useState(null);
+  const [analyzeResult, setAnalyzeResult] = useState(null);
 
   const cleanData = async () => {
     const url = "/api/data_cleaning";
@@ -27,6 +31,7 @@ export default function Home() {
       }
 
       const result = await response.json();
+      setCleanResult(result);
       console.log("Cleaning Step:", result);
     } catch (error) {
       console.error("Error:", error);
@@ -165,10 +170,10 @@ export default function Home() {
         <div className="flex flex-col gap-2 w-2/3 h-screen items-center justify-center">
           <AnalysisHeader />
           <Analysis
-            cleaned={true}
-            designed={true}
-            visualized={true}
-            analyzed={true}
+            cleanResult={cleanResult}
+            designResult={designResult}
+            visualizeResult={visualizeResult}
+            analyzeResult={analyzeResult}
           />
         </div>
       )}
