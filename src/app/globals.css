@@ -134,13 +134,13 @@
 
 @keyframes ellipsis {
   to {
-    width: 1em;    
+    width: .75em;    
   }
 }
 
 @-webkit-keyframes ellipsis {
   to {
-    width: 1em;    
+    width: .75em;    
   }
 }
 

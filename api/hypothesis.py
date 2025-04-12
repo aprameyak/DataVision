@@ -67,11 +67,9 @@ def hypothesis_testing(df, llm, instructions):
             
         figures, p_values = hypothesis_test(df)
         
-        # Check if counts match
         if len(figures) != len(p_values):
             return {"status": "error", "message": f"Count mismatch: {len(figures)} figures vs {len(p_values)} p-values"}
         
-        # Convert figures to base64
         base64_figures = [utils.convert_plt_to_base64(fig) for fig in figures]
         
         # Format p-values (keep None values as is)
