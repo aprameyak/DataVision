@@ -30,7 +30,7 @@ export default function DropDown({
           <AccordionTrigger disabled={ clicked <= phaseNum}>
             <div>
               <p
-                className={`${clicked > phaseNum ? "" : "loading"} text-[17px]`}
+                className={`${clicked > phaseNum || phaseNum == 3  ? "" : "loading"} text-[17px]`}
               >
                 {text}
               </p>
