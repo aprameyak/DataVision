@@ -26,7 +26,7 @@ hypothesis_testing_prompt_template = PromptTemplate.from_template("""
     For each set of features, you should also create a visualization of the data you are examining with matplotlib 
     and seaborn. 
     
-    Have the function return an array of all of the figures created.
+    Have the function return an array of all of the figures created, do not show the figures in the function.
     
     Only use the following libraries:
     - pandas
