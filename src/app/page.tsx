@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import Analysis from "@/components/analysis";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -120,39 +121,49 @@ export default function Home() {
 
   return (
     <div className="bg-white grid grid-rows-[56px_1fr_56px] items-center justify-items-center min-h-screen font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <p className="text-5xl m-auto">DataVision</p>
-        <p className="text-center w-full">{demoText}</p>
+      {!file && (
+        <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+          <p className="text-5xl m-auto">DataVision</p>
+          <p className="text-center w-full">{demoText}</p>
 
-        <div className="flex flex-col w-full max-w-md gap-4">
-          {isLoading ? (
-            <div className="flex flex-col gap-2 items-center justify-center text-center text-sm text-primary/80">
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Processing your CSV file...
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Input
-                type="file"
-                id="fileUpload"
-                className="hidden"
-                accept=".csv,text/csv"
-                onChange={handleFileChange}
-                disabled={isLoading}
-              />
-              <label
-                htmlFor="fileUpload"
-                className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${
-                  isLoading ? "opacity-50 pointer-events-none" : ""
-                }`}
-              >
-                <Upload className="h-8 aspect-square" />
-                Upload CSV
-              </label>
-            </div>
-          )}
-        </div>
-      </main>
+          <div className="flex flex-col w-full max-w-md gap-4">
+            {isLoading ? (
+              <div className="flex flex-col gap-2 items-center justify-center text-center text-sm text-primary/80">
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Processing your CSV file...
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Input
+                  type="file"
+                  id="fileUpload"
+                  className="hidden"
+                  accept=".csv,text/csv"
+                  onChange={handleFileChange}
+                  disabled={isLoading}
+                />
+                <label
+                  htmlFor="fileUpload"
+                  className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${
+                    isLoading ? "opacity-50 pointer-events-none" : ""
+                  }`}
+                >
+                  <Upload className="h-8 aspect-square" />
+                  Upload CSV
+                </label>
+              </div>
+            )}
+          </div>
+        </main>
+      )}
+      {file && (
+        <Analysis
+          cleaned={true}
+          designed={true}
+          visualized={true}
+          analyzed={true}
+        />
+      )}
       <footer className="bg-gray-200 w-full h-14 row-start-3 flex items-center justify-center">
         <a
           className="gap-2 text-gray-600 text-bold flex items-center hover:underline hover:underline-offset-4"
