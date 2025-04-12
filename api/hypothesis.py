@@ -4,11 +4,6 @@ import base64
 from io import BytesIO
 import numpy as np
 import pandas as pd
-import matplotlib
-matplotlib.use('TkAgg', force=True)
-import matplotlib.pyplot as plt
-import seaborn as sns
-import scipy.stats as stats
 from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
@@ -25,90 +20,73 @@ llm = GoogleGenerativeAI(
     temperature=0.7,
 )
 
-code_ht_prompt_template = PromptTemplate.from_template("""
+df = pd.read_csv("customers-100.csv")
 
-    You are an expert data scientist. Your task is to generate python code for hypothesis 
-    testing for relationships between certain features in a dataframe. The code should run the test,
-    calculating the p value, test statistic, and display the results in an appropriate graph. You 
-    will be provided with the following things: 
-        1. a list of features with which hypothesis tests to conduct for each features
-        2. an overview of the dataframe you are working with
+hypothesis_testing_prompt_template = PromptTemplate.from_template("""
+    You are an expert data scientist. Your task is to write a function that conducts a series of 
+    hypothesis tests on a dataframe, examining the relationships between different columns in the 
+    dataframe.
     
-    Your output should be a python function that performs this hypothesis testing and visualization.
-    You should use matplotlib, scipy, pandas, and seaborn for this.
-    Return only the code and no additional text. 
+    You will be provided with the following items:
+    1. A set of instructions containing which hypothesis tests to run and the columns to use.
+    2. An overview of the structure of the dataframe that will be inputted to your function.
     
-    Here is the list of features: 
-    {features}
+    Write a function called hypothesis_test that takes in a pandas dataframe and performs the specified 
+    hypothesis tests using scipy. You can assume that the dataframe will always have the properties detailed in the 
+    dataframe overview you receive. 
     
-    Here is an overview of the dataframe:
-    {overview}
+    For each set of features, you should also create a visualization of the data you are examining with matplotlib 
+    and seaborn. 
+    
+    Have the function return an array of all of the figures created.
+    
+    Only use the following libraries:
+    - pandas
+    - matplotlib
+    - seaborn
+    - scipy.stats
+    - numpy
+    
+    Respond with only the code and no additional text or explanation.
+
+    Here are the instructions:
+    {instructions}
+    
+    Here is the overview of the dataframe:
+    {data_overview}
+
 """)
 
-def run_hypothesis_pipeline(df, input_features, llm):
-    def plot_to_base64():
-        buf = BytesIO()
-        plt.savefig(buf, format="png", dpi=300, bbox_inches='tight')
-        buf.seek(0)
-        return base64.b64encode(buf.read()).decode("utf-8")
-
-    def get_llm_response(prompt):
-        response = llm.invoke(prompt)
-        return utils.cleanCode(
-            response if isinstance(response, str)
-            else getattr(response, "content", "") or response.get("content", "")
-        )
-
-    code_prompt_template = PromptTemplate.from_template("""
-    Generate Python code for hypothesis testing between features in a dataframe that:
-    1. Performs ALL specified tests in the analysis descriptions
-    2. Creates high-quality visualizations for ALL relationships
-    3. Shows test statistics on plots
-    4. Handles different data types appropriately
-    5. Returns a list of base64 encoded strings for each plot generated
-
-    IMPORTANT: Instead of using plt.show(), append each plot to a list as a base64 encoded string.
-
-    Analysis descriptions:
-    {features}
-
-    Dataframe overview:
-    {overview}
-
-    Return ONLY executable code that includes a function to perform all tests and return the list of plot images.
-    """)
-
-    initial_prompt = code_prompt_template.format(
-        features=input_features,
-        overview=utils.overview_data(df)
-    )
-
-    code_candidate = get_llm_response(initial_prompt)
+def hypothesis_testing(df, llm, instructions):
+    data_overview = utils.overview_data(df)
+    hypothesis_testing_prompt = hypothesis_testing_prompt_template.format(data_overview=data_overview, instructions=instructions)
+    code = utils.cleanCode(llm.invoke(hypothesis_testing_prompt))
+    print("CODE: \n", code)
 
     try:
-        ast.parse(code_candidate)
-    except SyntaxError as syn_err:
-        raise ValueError(f"Syntax error in generated code: {syn_err}\n\nCode:\n{code_candidate}")
+        local_env = {}
+        exec(code, local_env)
+        hypothesis_test = local_env.get("hypothesis_test")
 
-    exec_globals = {
-        '__builtins__': __builtins__,
-        'df': df,
-        'pd': pd,
-        'plt': plt,
-        'sns': sns,
-        'stats': stats,
-        'np': np,
-        'base64': base64,
-        'BytesIO': BytesIO,
-        'plot_to_base64': plot_to_base64
-    }
-
-    plot_images = []
-    try:
-        exec(code_candidate, exec_globals)
-        plot_images = exec_globals.get('plot_images', [])
+        if hypothesis_test:
+            figures = hypothesis_test(df)
+            figures[0].savefig("firstgraph.png")
+            return "Success!"
+        else:
+            return "Hypothesis testing function not found in generated code."
     except Exception as e:
-        print(f"Error in execution: {e}")
-        
-    return plot_images
+        return "Error running generated hypothesis testing code:" + str(e)
 
+
+
+test_procedure = """
+
+Analysis Results:
+Relationship between Country and Company. Hypothesis test: Chi-squared test.
+Relationship between Country and Subscription Date. Hypothesis test: ANOVA.
+Relationship between City and Company. Hypothesis test: Chi-squared test.
+Relationship between Subscription Date and Company. Hypothesis test: ANOVA.
+
+"""
+
+print(hypothesis_testing(df, llm, test_procedure))
