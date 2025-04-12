@@ -69,7 +69,10 @@ def hypothesis_test():
         print("Procedure: ", procedure)
     except Exception as e:
         return f"An error occurred while processing the file: {str(e)}", 500
+<<<<<<< HEAD
     print(hypothesis.hypothesis_testing(df, llm, procedure))
+=======
+>>>>>>> d6f2911b7e31b5699e237f6a6e8068ec4ac365be
     return jsonify(hypothesis.hypothesis_testing(df, llm, procedure))
 
 if __name__ == '__main__':
