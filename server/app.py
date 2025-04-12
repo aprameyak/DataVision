@@ -17,6 +17,10 @@ llm = GoogleGenerativeAI(
     temperature=0.7,
 )
 
+@app.route('/api/test')
+def test():
+    return "Hello, World!"
+
 @app.route('/api/data_cleaning')
 def hello_world():
     df = pd.read_csv("customers-100.csv") # Replace with correct csv loading method
