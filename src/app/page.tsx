@@ -36,7 +36,7 @@ export default function Home() {
       const result = await response.json();
       setCleanResult(result);
       setCurrentStep(1);
-      console.log("Cleaning Step:", result);
+      return result.summary;
     } catch (error) {
       console.error("Error:", error);
     }
@@ -98,6 +98,30 @@ export default function Home() {
     }
   };
 
+  const summarize = async (
+    cleaning_summary: string | null,
+    potential_relationships: string | null,
+    p_values_summary: string | null
+  ) => {
+    const url = "/api/summarize";
+    const data = {
+      cleaning_summary,
+      potential_relationships,
+      p_values_summary,
+    };
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   // Run handleUpload when file changes
   useEffect(() => {
     if (file) {
@@ -140,9 +164,14 @@ export default function Home() {
           description: file.name,
         });
 
-        await cleanData();
+        const cleanSummary = await cleanData();
         const designRes = await designProcedure();
         await hypothesisTest(designRes ?? null);
+        await summarize(
+          cleanSummary ?? null,
+          designRes ?? null,
+          "p values go here"
+        );
 
         // Implement your file upload/processing functionality here
         toast.success("File processed successfully", {
