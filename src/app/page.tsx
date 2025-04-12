@@ -88,6 +88,7 @@ export default function Home() {
       }
 
       const result = await response.json();
+      console.log("Hypothesis Test Result:", result);
       setHypothesisTestingResult(result);
       console.log("Hypothesis Test:", result);
     } catch (error) {
