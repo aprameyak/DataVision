@@ -87,8 +87,8 @@ design_procedure_prompt = PromptTemplate.from_template("""
 You are an expert data scientist. Your task is to find interesting insights about data
 in a pandas dataframe. You will be provided with an overview of the dataframe and you
 will make a list of potentially interesting relationships to explore in the data as well as
-the relevant hypothesis tests to conduct. Output only the list of potentially interesting
-relationships to explore and the relevant hypothesis tests to conduct, do not include any
+the relevant hypothesis tests to conduct. Output only a paragraph talking about the potentially interesting
+relationships that should be explored and the relevant hypothesis tests to conduct, do not include any
 additional text or explanation.
 
 Here is the overview of the dataframe:

@@ -22,12 +22,12 @@ export default function DropDown({
   clicked: number;
   phaseNum: number;
   data: any;
-}) {
+}) {    
   return (
     <div>
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
-          <AccordionTrigger>
+          <AccordionTrigger disabled={ clicked <= phaseNum}>
             <div>
               <p
                 className={`${clicked > phaseNum ? "" : "loading"} text-[17px]`}
