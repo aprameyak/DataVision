@@ -83,7 +83,7 @@ export default function Home() {
     <div className="bg-white grid grid-rows-[56px_1fr_56px] items-center justify-items-center min-h-screen font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <p className="text-5xl m-auto">DataVision</p>
-        <p>{demoText}</p>
+        <p className="text-center w-full">{demoText}</p>
 
         <div className="flex flex-col w-full max-w-md gap-4">
 
