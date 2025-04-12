@@ -246,7 +246,7 @@ export default function Home() {
         </div>
       )}
       {file && (
-        <div className="flex flex-col gap-2 w-2/3 h-screen items-center justify-center">
+        <div className="flex flex-col gap-2 w-full h-screen items-center justify-center">
           <AnalysisHeader onAction={backToHome} />
           <Analysis
             cleanResult={cleanResult}
