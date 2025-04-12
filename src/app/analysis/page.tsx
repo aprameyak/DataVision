@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import DropDown from "@/components/drop-down";
 import { Button } from "@/components/ui/button";
@@ -194,6 +195,7 @@ export default function Analysis() {
 
     return (
         <div className="bg-white flex justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
+            <Header onClick={() => window.history.back()} />
             <div className="w-full">
                 {/* <button
         className="bg-blue-500 text-white px-4 py-2 rounded"

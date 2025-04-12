@@ -1,17 +1,17 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/components/footer";
 
 export default function Home() {
   const [file, setFile] = useState<File>();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
 
   // Run handleUpload when file changes
@@ -20,8 +20,6 @@ export default function Home() {
       handleUpload();
     }
   }, [file]);
-
-  const [pvals, setPvals] = useState(0);
 
   const uploadFile = async () => {
     const url = "/api/upload-file";
@@ -77,7 +75,9 @@ export default function Home() {
 
       try {
         const id = await uploadFile();
-        router.push("/analysis", { query: { id } });
+        const params = new URLSearchParams(searchParams);
+        params.set("id", id);
+        router.push("/analysis?" + params.toString());
       } catch (error) {
         toast.error("Error processing file", {
           description: "An unexpected error occurred",
@@ -96,7 +96,7 @@ export default function Home() {
 
 
   return (
-     <div className="bg-white flex justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
+    <div className="bg-white flex justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
       {!file && (
         <div className="flex flex-col gap-6 row-start-2 items-center justify-center w-3/4">
           <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">
