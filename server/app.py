@@ -3,6 +3,7 @@ from langchain_google_genai import GoogleGenerativeAI
 import os
 from dotenv import load_dotenv
 import clean
+import design
 import pandas as pd
 
 app = Flask(__name__)
@@ -26,6 +27,12 @@ def hello_world():
     df = pd.read_csv("customers-100.csv") # Replace with correct csv loading method
     cleaning_result = clean.data_clean(df, llm)
     return cleaning_result
+
+@app.route("/api/design-procedure")
+def design_procedure():
+    df = pd.read_csv("customers-100.csv")
+    procedure = design.design_procedure(df)
+    return procedure
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
