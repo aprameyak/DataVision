@@ -21,6 +21,8 @@ export default function Home() {
     }
   }, [file]);
 
+  const [pvals, setPvals] = useState(0);
+
   const uploadFile = async () => {
     const url = "/api/upload-file";
     const formData = new FormData();
@@ -92,8 +94,9 @@ export default function Home() {
     }
   };
 
+
   return (
-    <div className="bg-white flex justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
+     <div className="bg-white flex justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
       {!file && (
         <div className="flex flex-col gap-6 row-start-2 items-center justify-center w-3/4">
           <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">

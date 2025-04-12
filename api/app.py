@@ -6,6 +6,7 @@ import clean
 import design
 import hypothesis
 import summarize
+import utils
 import pandas as pd
 from flask import request
 
@@ -67,18 +68,23 @@ def hypothesis_test():
     try:
         df = pd.read_csv(file)
         procedure = request.form.get('designResult')
-        print("Procedure: ", procedure)
     except Exception as e:
         return f"An error occurred while processing the file: {str(e)}", 500
     return jsonify(hypothesis.hypothesis_testing(df, llm, procedure))
 
 @app.route("/api/summarize", methods=['POST'])
-def summarize():
+def summarize_analysis():
     data = request.get_json()
     cleaning_summary = data.get('cleaning_summary')
     potential_relationships = data.get('potential_relationships')
     p_values_summary = data.get('p_values_summary')
-    summarize.summarize(cleaning_summary, potential_relationships, p_values_summary, llm)
+    return summarize.summarize(cleaning_summary, potential_relationships, p_values_summary, llm)
+
+
+@app.route("/api/chat", methods=['POST'])
+def chat():
+    data = request.get_json()
+    return utils.chatllm(data, llm)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
