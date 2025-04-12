@@ -125,8 +125,8 @@ export default function Home() {
       </main>
       <footer className="bg-gray-200 w-full h-14 row-start-3 flex items-center justify-center">
         <a
-          className="gap-2 text-gray-600 flex items-center hover:underline hover:underline-offset-4"
-          href="https://www.aadiananddeveloper05.com"
+          className="gap-2 text-gray-600 text-bold flex items-center hover:underline hover:underline-offset-4"
+          href="https://github.com/aadia1234/DataVision"
           target="_blank"
           rel="noopener noreferrer"
         >
