@@ -13,7 +13,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [cleanResult, setCleanResult] = useState(null);
   const [designResult, setDesignResult] = useState<string | null>(null);
-  const [hypothesisTestingResult, setHypothesisTestingResult] = useState<string[]>([]);
+  const [hypothesisTestingResult, setHypothesisTestingResult] = useState<
+    string[]
+  >([]);
   const [analyzeResult, setAnalyzeResult] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -89,8 +91,8 @@ export default function Home() {
 
       const result = await response.json();
       console.log("Raw response:", result);
-      setHypothesisTestingResult(result.visuals);
-      console.log(hypothesisTestingResult);
+      setHypothesisTestingResult(result.figures);
+      setCurrentStep(3);
     } catch (error) {
       console.error("Error:", error);
     }
