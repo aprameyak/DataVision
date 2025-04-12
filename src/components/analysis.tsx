@@ -8,7 +8,7 @@ import ImageDropDown from "./ui/imageDropDown";
 interface AnalysisProps {
   cleanResult: Record<string, any> | null;
   designResult: string | null;
-  hypothesisTestingResult: string[] | null;
+  hypothesisTestingResult: any | null;
   analyzeResult: string | null;
   currentStep: number;
 }
@@ -19,7 +19,6 @@ export default function Analysis({
   hypothesisTestingResult,
   analyzeResult,
   currentStep,
-  
 }: AnalysisProps) {
   const tempData =
     "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
@@ -107,7 +106,8 @@ export default function Analysis({
           text="Running Statistical Tests"
           clicked={currentStep}
           phaseNum={2}
-          images={hypothesisTestingResult || []}
+          images={hypothesisTestingResult.figures || []}
+          p_vals={hypothesisTestingResult.p_values || []}
         />
       )}
       {currentStep > 2 && (
@@ -118,7 +118,6 @@ export default function Analysis({
           data={tempData}
         />
       )}
-      
     </div>
   );
 }

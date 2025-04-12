@@ -16,6 +16,7 @@ export default function Home() {
   const [hypothesisTestingResult, setHypothesisTestingResult] = useState<
     string[]
   >([]);
+  const [pvals, setPvals] = useState<string[]>([]);
   const [analyzeResult, setAnalyzeResult] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -91,7 +92,7 @@ export default function Home() {
 
       const result = await response.json();
       console.log("Raw response:", result);
-      setHypothesisTestingResult(result.figures);
+      setHypothesisTestingResult(result);
       setCurrentStep(3);
     } catch (error) {
       console.error("Error:", error);
@@ -167,11 +168,11 @@ export default function Home() {
         const cleanSummary = await cleanData();
         const designRes = await designProcedure();
         await hypothesisTest(designRes ?? null);
-        await summarize(
-          cleanSummary ?? null,
-          designRes ?? null,
-          "p values go here"
-        );
+        // await summarize(
+        //   cleanSummary ?? null,
+        //   designRes ?? null,
+        //   "p values go here"
+        // );
 
         // Implement your file upload/processing functionality here
         toast.success("File processed successfully", {
@@ -197,14 +198,13 @@ export default function Home() {
     setFile(null);
     setCleanResult(null);
     setDesignResult(null);
-    setHypothesisTestingResult(null);
+    setHypothesisTestingResult([]);
     setAnalyzeResult(null);
-    setCurrentStep(0);
     setIsLoading(false);
-  }
+  };
 
   return (
-     <div className="bg-white flex items-center justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
+    <div className="bg-white flex items-center justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
       {!file && (
         <div className="flex flex-col gap-6 row-start-2 items-center justify-center w-3/4">
           <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">

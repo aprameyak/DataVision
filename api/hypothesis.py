@@ -29,7 +29,8 @@ hypothesis_testing_prompt_template = PromptTemplate.from_template("""
     
     Have the function return a tuple containing:
     1. A list of all the figures created (do not show the figures in the function).
-    2. A list of p-values corresponding to the hypothesis tests performed. Use None for skipped tests.
+    2. A list of p-values corresponding to the hypothesis tests performed. Use None for skipped tests. These should be
+       strings that say what the test is, what the variables are, and the p-value, e.g. "t-test: var1 vs var2, p-value: 0.05".
    
     Only use the following libraries:
     - pandas
@@ -38,6 +39,8 @@ hypothesis_testing_prompt_template = PromptTemplate.from_template("""
     - scipy.stats
     - numpy
    
+   DO NOT USE ANY OTHER LIBRARIES.
+                                                                  
     Respond with only the code and no additional text or explanation.
     Here are the instructions:
     {instructions}
@@ -52,6 +55,7 @@ def hypothesis_testing(df, llm, instructions):
         instructions=instructions
     )
     code = utils.cleanCode(llm.invoke(hypothesis_testing_prompt))
+    print("CODE: ", code)
     
     try:
         local_env = {}
@@ -71,12 +75,11 @@ def hypothesis_testing(df, llm, instructions):
         base64_figures = [utils.convert_plt_to_base64(fig) for fig in figures]
         
         # Format p-values (keep None values as is)
-        formatted_p_values = [float(p) if isinstance(p, (np.float64, float)) else None for p in p_values]
-        
+        p_values = [p if p is None else str(p) for p in p_values]        
         return {
             "status": "success",
             "figures": base64_figures,
-            "p_values": formatted_p_values
+            "p_values": p_values
         }
         
     except Exception as e:
