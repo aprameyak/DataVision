@@ -88,15 +88,9 @@ export default function Home() {
       }
 
       const result = await response.json();
-<<<<<<< HEAD
       console.log("Raw response:", result);
       setHypothesisTestingResult(result.visuals);
       console.log(hypothesisTestingResult);
-=======
-      console.log("Hypothesis Test Result:", result);
-      setHypothesisTestingResult(result);
-      console.log("Hypothesis Test:", result);
->>>>>>> d6f2911b7e31b5699e237f6a6e8068ec4ac365be
     } catch (error) {
       console.error("Error:", error);
     }
