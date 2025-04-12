@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -11,11 +11,46 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [demoText, setDemoText] = useState("Demo text");
 
-  const fetchData = async () => {
-    const res = await fetch("/api/test");
-    const text = await res.text();
-    console.log("TEXT: " + text);
-    setDemoText(text);
+  const cleanData = async () => {
+    const url = "/api/data_cleaning";
+    const formData = new FormData();
+    formData.append("file", file as Blob);
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      console.log("Cleaned CSV:", result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const designProcedure = async () => {
+    const url = "/api/design_procedure";
+    const formData = new FormData();
+    formData.append("file", file as Blob);
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.text();
+      console.log("Analysis Procedure:", result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   // Run handleUpload when file changes
@@ -30,7 +65,10 @@ export default function Home() {
       const selectedFile = e.target.files[0];
 
       // Check if file is a CSV
-      if (selectedFile.type === "text/csv" || selectedFile.name.endsWith('.csv')) {
+      if (
+        selectedFile.type === "text/csv" ||
+        selectedFile.name.endsWith(".csv")
+      ) {
         setFile(selectedFile);
         toast.success("CSV file selected", {
           description: selectedFile.name,
@@ -42,7 +80,7 @@ export default function Home() {
         });
 
         // Reset the file input
-        e.target.value = '';
+        e.target.value = "";
       }
     }
   };
@@ -57,7 +95,8 @@ export default function Home() {
           description: file.name,
         });
 
-        await fetchData();
+        await cleanData();
+        await designProcedure();
 
         // Implement your file upload/processing functionality here
         toast.success("File processed successfully", {
@@ -86,13 +125,12 @@ export default function Home() {
         <p className="text-center w-full">{demoText}</p>
 
         <div className="flex flex-col w-full max-w-md gap-4">
-
-          {isLoading ?
+          {isLoading ? (
             <div className="flex flex-col gap-2 items-center justify-center text-center text-sm text-primary/80">
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               Processing your CSV file...
             </div>
-            :
+          ) : (
             <div className="flex items-center gap-2">
               <Input
                 type="file"
@@ -104,13 +142,15 @@ export default function Home() {
               />
               <label
                 htmlFor="fileUpload"
-                className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+                className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${
+                  isLoading ? "opacity-50 pointer-events-none" : ""
+                }`}
               >
                 <Upload className="h-8 aspect-square" />
                 Upload CSV
               </label>
             </div>
-          }
+          )}
         </div>
       </main>
       <footer className="bg-gray-200 w-full h-14 row-start-3 flex items-center justify-center">
