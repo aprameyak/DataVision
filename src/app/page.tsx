@@ -10,7 +10,6 @@ import Analysis from "@/components/analysis";
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [demoText, setDemoText] = useState("Demo text");
 
   const cleanData = async () => {
     const url = "/api/data_cleaning";
@@ -122,9 +121,14 @@ export default function Home() {
   return (
     <div className="bg-white grid grid-rows-[56px_1fr_56px] items-center justify-items-center min-h-screen font-[family-name:var(--font-geist-sans)]">
       {!file && (
-        <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-          <p className="text-5xl m-auto">DataVision</p>
-          <p className="text-center w-full">{demoText}</p>
+        <main className="flex flex-col gap-6 row-start-2 items-center justify-center w-full">
+          <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">
+            <p className="text-5xl m-auto">DataVision</p>
+            <i className="text-center w-full">
+              Your intelligent assistant for exploring data, testing hypotheses,
+              and generating visuals.
+            </i>
+          </div>
 
           <div className="flex flex-col w-full max-w-md gap-4">
             {isLoading ? (
@@ -133,7 +137,7 @@ export default function Home() {
                 Processing your CSV file...
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center gap-2">
                 <Input
                   type="file"
                   id="fileUpload"
@@ -164,7 +168,7 @@ export default function Home() {
           analyzed={true}
         />
       )}
-      <footer className="bg-gray-200 w-full h-14 row-start-3 flex items-center justify-center">
+      <footer className="bg-gray-200 w-full h-12 text-xs row-start-3 flex items-center justify-center fixed bottom-0">
         <a
           className="gap-2 text-gray-600 text-bold flex items-center hover:underline hover:underline-offset-4"
           href="https://github.com/aadia1234/DataVision"
@@ -175,8 +179,8 @@ export default function Home() {
             aria-hidden
             src="/github-logo.svg"
             alt="Globe icon"
-            width={16}
-            height={16}
+            width={12}
+            height={12}
           />
           GitHub Repository
         </a>
