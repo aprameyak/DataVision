@@ -4,10 +4,11 @@ import base64
 from io import BytesIO
 import numpy as np
 import pandas as pd
-from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 import utils
+
+
 
 hypothesis_testing_prompt_template = PromptTemplate.from_template("""
     You are an expert data scientist. Your task is to write a function that conducts a series of 
@@ -49,6 +50,7 @@ def hypothesis_testing(df, llm, instructions):
     hypothesis_testing_prompt = hypothesis_testing_prompt_template.format(data_overview=data_overview, instructions=instructions)
     code = utils.cleanCode(llm.invoke(hypothesis_testing_prompt))
     print("CODE: \n", code)
+    plotstrings = []
 
     try:
         local_env = {}
@@ -58,7 +60,12 @@ def hypothesis_testing(df, llm, instructions):
         if hypothesis_test:
             figures = hypothesis_test(df)
             figures[0].savefig("firstgraph.png")
-            return "Success!"
+            figures = hypothesis_test(df)
+            base64_figures = [utils.convert_plt_to_base64(fig) for fig in figures]
+            return {
+                "status": "success",
+                "figures": base64_figures
+            }
         else:
             return "Hypothesis testing function not found in generated code."
     except Exception as e:
