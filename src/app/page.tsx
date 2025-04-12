@@ -3,24 +3,21 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, Upload, Loader2, Github } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [demoText, setDemoText] = useState("Demo text");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch("/api/hello");
-      const text = await res.text();
-      console.log("TEXT: " + text);
-    };
-
-    fetchData();
-  }, [])
+  const fetchData = async () => {
+    const res = await fetch("/api/hello");
+    const text = await res.text();
+    console.log("TEXT: " + text);
+    setDemoText(text);
+  };
 
   // Run handleUpload when file changes
   useEffect(() => {
@@ -61,8 +58,7 @@ export default function Home() {
           description: file.name,
         });
 
-        // Simulate processing time
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await fetchData();
 
         // Implement your file upload/processing functionality here
 
@@ -89,6 +85,7 @@ export default function Home() {
     <div className="bg-white grid grid-rows-[56px_1fr_56px] items-center justify-items-center min-h-screen font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <p className="text-5xl m-auto">DataVision</p>
+        <p>{demoText}</p>
 
         <div className="flex flex-col w-full max-w-md gap-4">
 
