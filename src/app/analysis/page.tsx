@@ -42,6 +42,10 @@ export default function Analysis() {
         await summarize(cleanSummary ?? null, designRes ?? null, "p values go here");
     };
 
+    useEffect(() => {
+        load();
+    }, []);
+
     const cleanData = async () => {
         const url = "/api/data_cleaning";
 
