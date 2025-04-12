@@ -12,6 +12,7 @@ interface AnalysisProps {
   designResult: string | null;
   visualizeResult: string | null;
   analyzeResult: string | null;
+  currentStep: number;
 }
 
 export default function Analysis({
@@ -19,13 +20,13 @@ export default function Analysis({
   designResult,
   visualizeResult,
   analyzeResult,
+  currentStep,
 }: AnalysisProps) {
   const tempData =
     "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
 
   const [cleanSummary, setCleanSummary] = useState<string | null>(null);
   const [codeForCleaning, setCodeForCleaning] = useState<string | null>(null);
-  const [clicked, setClicked] = useState(0);
 
   const downloadCSV = () => {
     if (cleanResult && cleanResult.csv) {
@@ -64,42 +65,49 @@ export default function Analysis({
     </div>
   );
 
+  const DesignStepData = (
+    <div className="flex flex-col gap-2">
+      <span className="font-bold">Proposed Procedure:</span>
+      <p>{designResult}</p>
+    </div>
+  );
+
   return (
     <div className="w-full">
-      <button
+      {/* <button
         className="bg-blue-500 text-white px-4 py-2 rounded"
         onClick={() => setClicked(clicked + 1)}
       >
         clean
-      </button>
+      </button> */}
 
       {/* temporarly based on clicked variable need to add ani*/}
       <DropDown
-        text="Cleaning data"
-        clicked={clicked}
+        text="Cleaning Data"
+        clicked={currentStep}
         phaseNum={0}
         data={CleaningStepData}
       />
-      {clicked > 0 && (
+      {currentStep > 0 && (
         <DropDown
-          text="Finding Patterns"
-          clicked={clicked}
+          text="Designing Analysis Procedure"
+          clicked={currentStep}
           phaseNum={1}
-          data={tempData}
+          data={DesignStepData}
         />
       )}
-      {clicked > 1 && (
+      {currentStep > 1 && (
         <DropDown
           text="Running Statistical Tests"
-          clicked={clicked}
+          clicked={currentStep}
           phaseNum={2}
           data={tempData}
         />
       )}
-      {clicked > 2 && (
+      {currentStep > 2 && (
         <DropDown
           text="Found Data!"
-          clicked={clicked}
+          clicked={currentStep}
           phaseNum={3}
           data={tempData}
         />

@@ -12,9 +12,10 @@ export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [cleanResult, setCleanResult] = useState(null);
-  const [designResult, setDesignResult] = useState(null);
+  const [designResult, setDesignResult] = useState<string | null>(null);
   const [visualizeResult, setVisualizeResult] = useState(null);
   const [analyzeResult, setAnalyzeResult] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const cleanData = async () => {
     const url = "/api/data_cleaning";
@@ -32,6 +33,7 @@ export default function Home() {
 
       const result = await response.json();
       setCleanResult(result);
+      setCurrentStep(1);
       console.log("Cleaning Step:", result);
     } catch (error) {
       console.error("Error:", error);
@@ -53,6 +55,8 @@ export default function Home() {
       }
 
       const result = await response.text();
+      setDesignResult(result);
+      setCurrentStep(2);
       console.log("Analysis Procedure:", result);
     } catch (error) {
       console.error("Error:", error);
@@ -174,6 +178,7 @@ export default function Home() {
             designResult={designResult}
             visualizeResult={visualizeResult}
             analyzeResult={analyzeResult}
+            currentStep={currentStep}
           />
         </div>
       )}
