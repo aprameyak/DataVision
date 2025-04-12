@@ -13,7 +13,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [cleanResult, setCleanResult] = useState(null);
   const [designResult, setDesignResult] = useState<string | null>(null);
-  const [hypothesisTestingResult, setHypothesisTestingResult] = useState(null);
+  const [hypothesisTestingResult, setHypothesisTestingResult] = useState<string[]>([]);
   const [analyzeResult, setAnalyzeResult] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
 

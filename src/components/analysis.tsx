@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import AnalysisHeader from "@/components/analysisHeader";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import ImageDropDown from "./ui/imageDropDown";
 
 interface AnalysisProps {
   cleanResult: Record<string, any> | null;
   designResult: string | null;
-  hypothesisTestingResult: string | null;
+  hypothesisTestingResult: string[] | null;
   analyzeResult: string | null;
   currentStep: number;
 }
@@ -20,6 +21,7 @@ export default function Analysis({
   hypothesisTestingResult,
   analyzeResult,
   currentStep,
+  
 }: AnalysisProps) {
   const tempData =
     "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
@@ -103,11 +105,11 @@ export default function Analysis({
         />
       )}
       {currentStep > 1 && (
-        <DropDown
+        <ImageDropDown
           text="Running Statistical Tests"
           clicked={currentStep}
           phaseNum={2}
-          data={tempData}
+          images={hypothesisTestingResult || []}
         />
       )}
       {currentStep > 2 && (
