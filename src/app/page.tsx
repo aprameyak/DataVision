@@ -27,7 +27,7 @@ export default function Home() {
       }
 
       const result = await response.json();
-      console.log("Cleaned CSV:", result);
+      console.log("Cleaning Step:", result);
     } catch (error) {
       console.error("Error:", error);
     }
