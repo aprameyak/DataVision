@@ -161,8 +161,18 @@ export default function Home() {
     }
   };
 
+  const backToHome = () => {
+    setFile(null);
+    setCleanResult(null);
+    setDesignResult(null);
+    setHypothesisTestingResult(null);
+    setAnalyzeResult(null);
+    setCurrentStep(0);
+    setIsLoading(false);
+  }
+
   return (
-    <div className="bg-white flex items-center justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
+     <div className="bg-white flex items-center justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
       {!file && (
         <div className="flex flex-col gap-6 row-start-2 items-center justify-center w-3/4">
           <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">
@@ -205,7 +215,7 @@ export default function Home() {
       )}
       {file && (
         <div className="flex flex-col gap-2 w-2/3 h-screen items-center justify-center">
-          <AnalysisHeader />
+          <AnalysisHeader onAction={backToHome} />
           <Analysis
             cleanResult={cleanResult}
             designResult={designResult}
