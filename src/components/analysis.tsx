@@ -11,7 +11,7 @@ import { Send, Paperclip } from "lucide-react";
 interface AnalysisProps {
   cleanResult: Record<string, any> | null;
   designResult: string | null;
-  hypothesisTestingResult: string[] | null;
+  hypothesisTestingResult: any | null;
   analyzeResult: string | null;
   currentStep: number;
 }
@@ -35,9 +35,16 @@ export default function Analysis({
   const [cleanSummary, setCleanSummary] = useState<string | null>(null);
   const [codeForCleaning, setCodeForCleaning] = useState<string | null>(null);
 
+
   // Chat state
   const [messages, setMessages] = useState<Message[]>([
     {
+      id: "1",
+      content:
+        "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
+      role: "assistant",
+      timestamp: new Date(),
+    },
       id: "1",
       content:
         "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
@@ -77,6 +84,7 @@ export default function Analysis({
   // Scroll to bottom of chat whenever messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const sendMessage = async () => {
@@ -89,6 +97,7 @@ export default function Analysis({
       role: "user",
       timestamp: new Date(),
     };
+
 
     // Update messages with user's message
     setMessages((prev) => [...prev, newUserMessage]);

@@ -16,6 +16,7 @@ export default function Home() {
   const [hypothesisTestingResult, setHypothesisTestingResult] = useState<
     string[]
   >([]);
+  const [pvals, setPvals] = useState<string[]>([]);
   const [analyzeResult, setAnalyzeResult] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -91,7 +92,7 @@ export default function Home() {
 
       const result = await response.json();
       console.log("Raw response:", result);
-      setHypothesisTestingResult(result.figures);
+      setHypothesisTestingResult(result);
       setCurrentStep(3);
     } catch (error) {
       console.error("Error:", error);
@@ -167,11 +168,11 @@ export default function Home() {
         const cleanSummary = await cleanData();
         const designRes = await designProcedure();
         await hypothesisTest(designRes ?? null);
-        await summarize(
-          cleanSummary ?? null,
-          designRes ?? null,
-          "p values go here"
-        );
+        // await summarize(
+        //   cleanSummary ?? null,
+        //   designRes ?? null,
+        //   "p values go here"
+        // );
 
         // Implement your file upload/processing functionality here
         toast.success("File processed successfully", {
@@ -199,7 +200,6 @@ export default function Home() {
     setDesignResult(null);
     setHypothesisTestingResult([]);
     setAnalyzeResult(null);
-    setCurrentStep(0);
     setIsLoading(false);
   };
 
