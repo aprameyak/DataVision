@@ -1,17 +1,19 @@
 import os
-from dotenv import load_dotenv
-from langchain_google_genai import GoogleGenerativeAI
-from langchain.chains import LLMChain
-from langchain_core.prompts import PromptTemplate
+import ast
+import base64
+from io import BytesIO
+import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg', force=True)
 import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy.stats as stats
-import numpy as np
-import seaborn as sns
+from dotenv import load_dotenv
+from langchain_google_genai import GoogleGenerativeAI
+from langchain_core.prompts import PromptTemplate
 import utils
-import matplotlib
-matplotlib.use('TkAgg') 
+
 
 load_dotenv()
 
@@ -42,74 +44,71 @@ code_ht_prompt_template = PromptTemplate.from_template("""
     Here is an overview of the dataframe:
     {overview}
 """)
-def run_hypothesis_analysis(df, input_features, llm):
-    try:
-        # Format the prompt
-        prompt = code_ht_prompt_template.format(features=input_features, overview=utils.overview_data(df))
 
-        # Get generated code
+def run_hypothesis_pipeline(df, input_features, llm):
+    def plot_to_base64():
+        buf = BytesIO()
+        plt.savefig(buf, format="png", dpi=300, bbox_inches='tight')
+        buf.seek(0)
+        return base64.b64encode(buf.read()).decode("utf-8")
+
+    def get_llm_response(prompt):
         response = llm.invoke(prompt)
-        code = utils.cleanCode(response)
+        return utils.cleanCode(
+            response if isinstance(response, str)
+            else getattr(response, "content", "") or response.get("content", "")
+        )
 
-        # Create a full script assuming df is already defined
-        with open('generated_tests.py', 'w') as f:
-            f.write(f"""
-# Required imports
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from scipy import stats
-import numpy as np
+    code_prompt_template = PromptTemplate.from_template("""
+    Generate Python code for hypothesis testing between features in a dataframe that:
+    1. Performs ALL specified tests in the analysis descriptions
+    2. Creates high-quality visualizations for ALL relationships
+    3. Shows test statistics on plots
+    4. Handles different data types appropriately
+    5. Returns a list of base64 encoded strings for each plot generated
 
-# df is already defined before this runs
+    IMPORTANT: Instead of using plt.show(), append each plot to a list as a base64 encoded string.
 
-# Generated code starts here
-{code}
-""")
+    Analysis descriptions:
+    {features}
 
-        # Execute the generated code with df in context
-        exec_globals = {
-            '__builtins__': __builtins__,
-            'df': df,
-            'pd': pd,
-            'plt': plt,
-            'sns': sns,
-            'stats': stats,
-            'np': np
-        }
+    Dataframe overview:
+    {overview}
 
-        with open('generated_tests.py') as f:
-            exec(f.read(), exec_globals)
+    Return ONLY executable code that includes a function to perform all tests and return the list of plot images.
+    """)
 
-        # Show plots
-        plt.show()
-        return code, "Hypothesis tests completed successfully"
+    initial_prompt = code_prompt_template.format(
+        features=input_features,
+        overview=utils.overview_data(df)
+    )
 
+    code_candidate = get_llm_response(initial_prompt)
+
+    try:
+        ast.parse(code_candidate)
+    except SyntaxError as syn_err:
+        raise ValueError(f"Syntax error in generated code: {syn_err}\n\nCode:\n{code_candidate}")
+
+    exec_globals = {
+        '__builtins__': __builtins__,
+        'df': df,
+        'pd': pd,
+        'plt': plt,
+        'sns': sns,
+        'stats': stats,
+        'np': np,
+        'base64': base64,
+        'BytesIO': BytesIO,
+        'plot_to_base64': plot_to_base64
+    }
+
+    plot_images = []
+    try:
+        exec(code_candidate, exec_globals)
+        plot_images = exec_globals.get('plot_images', [])
     except Exception as e:
-        return None, f"Error running hypothesis tests: {e}"
+        print(f"Error in execution: {e}")
+        
+    return plot_images
 
-# Test hypothesis
-if __name__ == "__main__":
-    input_features = """
-    Subscription Date vs Country
-    Company Type vs Country
-    Email Domain vs Country
-    Website Domain vs Company Type
-    Phone Format vs Country
-    """
-
-    df = pd.DataFrame({
-        'Subscription Date': ['2023-01-15', '2023-02-20', '2023-01-10', '2023-03-01', '2023-02-25'],
-        'Country': ['USA', 'Canada', 'USA', 'UK', 'Canada'],
-        'Company Type': ['Tech', 'Finance', 'Tech', 'Retail', 'Finance'],
-        'Email': ['john.doe@gmail.com', 'jane.smith@yahoo.ca', 'peter.jones@company.com', 'lisa.brown@retail.co.uk', 'mark.wilson@finance.ca'],
-        'Website': ['www.techco.com', 'www.financeinc.ca', 'www.techsolutions.com', 'www.retailgroup.co.uk', 'www.finance.ca'],
-        'Phone Number': ['123-456-7890', '456-789-0123', '789-012-3456', '0123456789', '345-678-9012']
-    })
-
-    code, result = run_hypothesis_analysis(df, input_features, llm)
-    if code:
-        print("Generated Hypothesis Testing Code:")
-        print(code)
-        print("\nTest Execution Result:")
-        print(result)
