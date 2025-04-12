@@ -1,9 +1,15 @@
 import io 
 import base64
-from flask import send_file
+import os
+from flask import send_file, request, jsonify
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SYSTEM_PROMPT = """You are a helpful data analysis assistant. Keep responses concise and focused on the current task."""
 
 def cleanCode(code):
-    return code.replace("```python", "").replace("```json", "").replace("```", "")
+    return code.replace("``````json", "").replace("```", "")
 
 def overview_data(df):
     output = "Data Overview:\n"
@@ -13,12 +19,10 @@ def overview_data(df):
     output += "Sample:\n" + df.sample(5).to_string() + "\n"
     output += "Info:\n"
     
-    # Use StringIO instead of a list for the buffer
     buffer = io.StringIO()
     df.info(buf=buffer)
-    buffer.seek(0)  # Reset position to the start of the buffer
+    buffer.seek(0)
     output += buffer.read() + "\n"
-    
     output += "Describe:\n" + df.describe().to_string() + "\n"
     return output
 
@@ -26,13 +30,28 @@ def convert_plt_to_base64(fig):
     buf = io.BytesIO()
     fig.savefig(buf, format='png', dpi=100, bbox_inches='tight')
     buf.seek(0)
-    img_str = base64.b64encode(buf.read()).decode('utf-8')
-    return img_str
-
+    return base64.b64encode(buf.read()).decode('utf-8')
 
 def send_figure_as_response(fig, fmt='png', dpi=100, bbox_inches='tight', **savefig_kwargs):
     buf = io.BytesIO()
     fig.savefig(buf, format=fmt, dpi=dpi, bbox_inches=bbox_inches, **savefig_kwargs)
     buf.seek(0)
-    mimetype = f"image/{fmt}"
-    return send_file(buf, mimetype=mimetype)
+    return send_file(buf, mimetype=f"image/{fmt}")
+
+def chatllm(data, llm):
+    """Handles chat with conversation history"""
+    try:
+        user_msg = data.get("message", "")
+        history = data.get("history", [])
+
+        conversation = history + [{"role": "user", "content": user_msg}]
+        response = llm.invoke(conversation)
+
+        reply = response.get("content", "")
+
+        return jsonify({
+            "reply": reply,
+            "history": conversation + [{"role": "assistant", "content": reply}]
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

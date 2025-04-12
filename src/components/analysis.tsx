@@ -35,7 +35,6 @@ export default function Analysis({
   const [cleanSummary, setCleanSummary] = useState<string | null>(null);
   const [codeForCleaning, setCodeForCleaning] = useState<string | null>(null);
   
-  // Chat state
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -54,9 +53,9 @@ export default function Analysis({
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "cleaned_data.csv"; // Name of the downloaded file
+      a.download = "cleaned_data.csv";
       a.click();
-      URL.revokeObjectURL(url); // Clean up the URL object
+      URL.revokeObjectURL(url); 
     } else {
       console.error("No CSV data available for download");
     }
@@ -73,7 +72,6 @@ export default function Analysis({
     console.log("Summary: ", cleanSummary);
   }, [cleanResult]);
 
-  // Scroll to bottom of chat whenever messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -81,7 +79,6 @@ export default function Analysis({
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
     
-    // Create new message object
     const newUserMessage: Message = {
       id: Date.now().toString(),
       content: inputMessage,
@@ -89,13 +86,11 @@ export default function Analysis({
       timestamp: new Date()
     };
     
-    // Update messages with user's message
     setMessages(prev => [...prev, newUserMessage]);
     setInputMessage('');
     setIsLoading(true);
     
     try {
-      // Replace with your actual API endpoint
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -114,7 +109,6 @@ export default function Analysis({
       
       const data = await response.json();
       
-      // Add assistant's response to messages
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: data.message || "Sorry, I couldn't process your request.",
@@ -126,7 +120,6 @@ export default function Analysis({
     } catch (error) {
       console.error('Error sending message:', error);
       
-      // Add error message
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: "Sorry, there was an error processing your request. Please try again.",
@@ -206,7 +199,6 @@ export default function Analysis({
         />
       )}
       
-      {/* Chat Interface */}
       <div className="mt-8 border rounded-lg shadow-md">
         <div className="bg-gray-100 p-4 rounded-t-lg border-b">
           <h3 className="font-semibold text-gray-800">Data Analysis Assistant</h3>
