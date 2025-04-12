@@ -21,26 +21,49 @@ export default function Analysis({
   analyzed,
 }: AnalysisProps) {
   const [clicked, setClicked] = useState(0);
-  const tempData = "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  "
+  const tempData =
+    "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
 
   return (
-    <div>
-      <AnalysisHeader/>
+    <div className="w-full">
       <button
         className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={() => setClicked(clicked + 1)}>
+        onClick={() => setClicked(clicked + 1)}
+      >
         clean
       </button>
-      
 
-        {/* temporarly based on clicked variable need to add ani*/}
-      <DropDown text="Cleaning data" clicked={clicked} phaseNum={0} data={tempData}/>
-      {clicked>0 && <DropDown text="Finding Patterns" clicked={clicked} phaseNum={1} data={tempData}/>}
-      {clicked>1 && <DropDown text="Running Statistical Tests" clicked={clicked} phaseNum={2} data={tempData}/>}
-      {clicked>2 && <DropDown text="Found Data!" clicked={clicked} phaseNum={3} data={tempData}/>}
-              
+      {/* temporarly based on clicked variable need to add ani*/}
+      <DropDown
+        text="Cleaning data"
+        clicked={clicked}
+        phaseNum={0}
+        data={tempData}
+      />
+      {clicked > 0 && (
+        <DropDown
+          text="Finding Patterns"
+          clicked={clicked}
+          phaseNum={1}
+          data={tempData}
+        />
+      )}
+      {clicked > 1 && (
+        <DropDown
+          text="Running Statistical Tests"
+          clicked={clicked}
+          phaseNum={2}
+          data={tempData}
+        />
+      )}
+      {clicked > 2 && (
+        <DropDown
+          text="Found Data!"
+          clicked={clicked}
+          phaseNum={3}
+          data={tempData}
+        />
+      )}
     </div>
-
-    
   );
 }
