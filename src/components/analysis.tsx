@@ -118,6 +118,8 @@ export default function Analysis({
           data={tempData}
         />
       )}
+      
+    
     </div>
   );
 }
