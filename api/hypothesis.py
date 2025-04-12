@@ -59,8 +59,6 @@ def hypothesis_testing(df, llm, instructions):
 
         if hypothesis_test:
             figures = hypothesis_test(df)
-            figures[0].savefig("firstgraph.png")
-            figures = hypothesis_test(df)
             base64_figures = [utils.convert_plt_to_base64(fig) for fig in figures]
             return {
                 "status": "success",
