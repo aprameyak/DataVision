@@ -68,7 +68,6 @@ def hypothesis_test():
     try:
         df = pd.read_csv(file)
         procedure = request.form.get('designResult')
-        print("Procedure: ", procedure)
     except Exception as e:
         return f"An error occurred while processing the file: {str(e)}", 500
     return jsonify(hypothesis.hypothesis_testing(df, llm, procedure))
