@@ -188,11 +188,11 @@ export default function Analysis() {
 
   return (
     <div
-      className={`bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'
+      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'
         }`}
     >
       <Header onClick={() => window.history.back()} />
-      <div className="w-[80%] mt-20 mx-auto flex flex-col gap-10">
+      <div className=" w-[80%] py-10 mx-auto flex flex-col gap-10">
         <DropDown text="Cleaning Data" view={CleaningStepData} />
 
         {analysis?.designResult && (

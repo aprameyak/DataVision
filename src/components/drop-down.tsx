@@ -14,6 +14,7 @@ export default function DropDown({
   view: any | undefined | null;
 }) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   // Trigger fade-in animation after component mounts
   useEffect(() => {
@@ -31,13 +32,13 @@ export default function DropDown({
       <Accordion
         type="single"
         collapsible
-        className="border rounded-lg bg-gray-50 mx-auto"
+        className="border rounded-lg bg-gray-50 overflow-hidden mx-auto"
       >
         <AccordionItem value={`item-${text}`}>
-          <AccordionTrigger disabled={!view} className="px-5 cursor-pointer">
+          <AccordionTrigger onClick={() => setIsOpen(!isOpen)} disabled={!view} className={`${isOpen ? `border-b` : ``} bg-gray-100 rounded-b-none px-5 cursor-pointer`}>
             <p className={`${view ? "" : "loading"} text-lg font-bold`}>{text}</p>
           </AccordionTrigger>
-          <AccordionContent className="pl-3 pr-7">
+          <AccordionContent className="pl-3 pr-7 w-full mt-4 ">
             {text === "Running Statistical Tests" ? (
               <div className="flex flex-col gap-4 overflow-y-auto max-h-96">
                 {view.figures.map((base64Str: string, index: number) => (

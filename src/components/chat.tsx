@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Send, Paperclip } from "lucide-react";
+import { Send } from "lucide-react";
 
 interface Message {
   id: string;
@@ -21,11 +21,22 @@ export default function Chat() {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Fade-in effect when component mounts
+  useEffect(() => {
+    // Small delay to ensure animation works
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 600); // Delayed to appear after the dropdowns
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -62,12 +73,12 @@ export default function Chat() {
       if (!response.ok) {
         throw new Error("Failed to get response");
       }
-      
 
-        const data = await response.json();
-        console.log("data: ", data);
-        responseContent =
-          data.reply || "Sorry, I couldn't process your request.";
+
+      const data = await response.json();
+      console.log("data: ", data);
+      responseContent =
+        data.reply || "Sorry, I couldn't process your request.";
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -102,12 +113,13 @@ export default function Chat() {
   };
 
   return (
-    <div className="border w-full m-auto rounded-lg">
-      <div className="bg-gray-50 py-4 px-5 rounded-t-lg border-b">
-        <h3 className="font-bold text-lg text-primary">Data Analysis Assitant</h3>
+    <div className={`border w-full m-auto rounded-lg transition-all duration-700 ease-in-out ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
+      }`}>
+      <div className="bg-gray-100 py-4 px-5 rounded-t-lg border-b">
+        <h3 className="font-bold text-lg text-primary">Data Analysis Assistant</h3>
       </div>
 
-      <div className="h-80 overflow-y-auto p-4 space-y-4">
+      <div className="h-80 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -117,12 +129,12 @@ export default function Chat() {
             <div
               className={`max-w-3/4 p-3 rounded-lg ${message.role === "user"
                 ? "bg-primary text-white rounded-br-none"
-                : "bg-gray-200 text-gray-800 rounded-bl-none"
+                : "bg-gray-200 border-primary text-primary rounded-bl-none"
                 }`}
             >
               {message.content}
               <div
-                className={`text-xs mt-1 ${message.role === "user" ? "text-blue-100" : "text-gray-500"
+                className={`text-xs mt-1 ${message.role === "user" ? "text-blue-100" : "text-muted-foreground"
                   }`}
               >
                 {message.timestamp.toLocaleTimeString([], {
@@ -153,13 +165,13 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-3 border-t flex gap-2">
+      <div className="p-3 border-t flex gap-2 bg-gray-50 rounded-b-lg">
         <Input
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyDown={handleKeyPress}
           placeholder="Type your message..."
-          className="flex-1"
+          className="flex-1 shadow-none"
         />
         <Button
           onClick={sendMessage}
@@ -167,7 +179,6 @@ export default function Chat() {
           className="shrink-0"
         >
           <Send className="h-5 w-5" />
-          {/* Send */}
         </Button>
       </div>
     </div>

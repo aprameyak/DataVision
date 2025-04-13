@@ -41,7 +41,7 @@ function AccordionTrigger({
       >
         {/* disabled now just turns off the arrow */}
         {children}
-        {!props.disabled && <ChevronDownIcon className={`text-primary pointer-events-none size-4 shrink-0 translate-y-0.5 -translate-x-5 transition-transform duration-200`} />}
+        {!props.disabled && <ChevronDownIcon className={`my-auto text-primary pointer-events-none size-5 shrink-0 translate-y-0.5 -translate-x-5 transition-transform duration-200`} />}
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );
