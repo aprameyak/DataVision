@@ -223,6 +223,31 @@ export default function Analysis() {
     </div>
   );
 
+  // Utility function to handle file deletion on page unload
+  const handleBeforeUnload = (id: string | null) => {
+    if (id) {
+      const url = "/api/delete_file";
+      const data = JSON.stringify({ id });
+
+      // Use navigator.sendBeacon for reliable file deletion
+      const blob = new Blob([data], { type: "application/json" });
+      navigator.sendBeacon(url, blob);
+      console.log(`File with ID ${id} deletion request sent.`);
+    }
+  };
+
+  useEffect(() => {
+    const unloadHandler = () => {
+      handleBeforeUnload(id); // Pass the file ID to the function
+    };
+
+    window.addEventListener("beforeunload", unloadHandler);
+
+    return () => {
+      window.removeEventListener("beforeunload", unloadHandler);
+    };
+  }, [id]);
+
   return (
     <div
       className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${
