@@ -95,10 +95,8 @@ def summarize_analysis():
 
 
 @app.route("/api/chat", methods=['POST'])
-def chat():
+def llm_chat():
     data = request.get_json()
-    print("Received chat data:", data)
-
     return chat.chatllm(data, llm)
 
 if __name__ == '__main__':

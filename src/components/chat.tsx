@@ -15,7 +15,8 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
+      content:
+        "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
       role: "assistant",
       timestamp: new Date(),
     },
@@ -53,6 +54,7 @@ export default function Chat() {
           role: msg.role,
           content: msg.content,
         })),
+        id: id,
       };
 
       const response = await fetch("/api/chat", {
@@ -66,12 +68,10 @@ export default function Chat() {
       if (!response.ok) {
         throw new Error("Failed to get response");
       }
-      
 
-        const data = await response.json();
-        console.log("data: ", data);
-        responseContent =
-          data.reply || "Sorry, I couldn't process your request.";
+      const data = await response.json();
+      console.log("data: ", data);
+      responseContent = data.reply + "\n\n" + data.result;
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -108,26 +108,31 @@ export default function Chat() {
   return (
     <div className="border w-full m-auto rounded-lg">
       <div className="bg-gray-50 py-4 px-5 rounded-t-lg border-b">
-        <h3 className="font-bold text-lg text-primary">Data Analysis Assitant</h3>
+        <h3 className="font-bold text-lg text-primary">
+          Data Analysis Assitant
+        </h3>
       </div>
 
       <div className="h-80 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
-              }`}
+            className={`flex ${
+              message.role === "user" ? "justify-end" : "justify-start"
+            }`}
           >
             <div
-              className={`max-w-3/4 p-3 rounded-lg ${message.role === "user"
-                ? "bg-primary text-white rounded-br-none"
-                : "bg-gray-200 text-gray-800 rounded-bl-none"
-                }`}
+              className={`max-w-3/4 p-3 rounded-lg ${
+                message.role === "user"
+                  ? "bg-primary text-white rounded-br-none"
+                  : "bg-gray-200 text-gray-800 rounded-bl-none"
+              }`}
             >
               {message.content}
               <div
-                className={`text-xs mt-1 ${message.role === "user" ? "text-blue-100" : "text-gray-500"
-                  }`}
+                className={`text-xs mt-1 ${
+                  message.role === "user" ? "text-blue-100" : "text-gray-500"
+                }`}
               >
                 {message.timestamp.toLocaleTimeString([], {
                   hour: "2-digit",

@@ -27,7 +27,7 @@ export default function Analysis() {
     const load = async () => {
       const cleanSummary = await cleanData();
       const designRes = await designProcedure();
-      // await hypothesisTest(designRes ?? null);
+      await hypothesisTest(designRes ?? null);
       // await summarize(
       //   cleanSummary ?? null,
       //   designRes ?? null,
@@ -188,8 +188,9 @@ export default function Analysis() {
 
   return (
     <div
-      className={`bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
+      className={`bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
     >
       <Header onClick={() => window.history.back()} />
       <div className="w-[80%] mt-20 mx-auto flex flex-col gap-10">

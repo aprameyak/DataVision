@@ -3,6 +3,8 @@ from langchain_core.prompts import PromptTemplate
 import utils
 import json
 import io
+import app
+import pandas as pd
 
 chat_prompt_template = PromptTemplate.from_template("""
 
@@ -33,8 +35,9 @@ Here is the overview of the dataframe:
 """)
 
 def chatllm(data, llm):
-    file_path = data.get("file_path")
-    df = utils.read_csv(file_path)
+    id = data.get("id")
+    file_path = app.get_file_path(id)
+    df = pd.read_csv(file_path)
     data_overview = utils.overview_data(df)
     user_msg = data.get("message")
     new_history = data.get("history") + [{"role": "user", "content": user_msg}]
@@ -50,7 +53,7 @@ def chatllm(data, llm):
         code = json_output['code']
 
         local_env = {}
-        exec(code, globals(), local_env)
+        exec(code, local_env)
         analyze_function = local_env.get("analyze")
 
         if analyze_function:
