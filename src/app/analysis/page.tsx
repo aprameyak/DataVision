@@ -202,29 +202,27 @@ export default function Analysis() {
   //     </div>
   //   );
 
-  return (
-    <div className="bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)]">
-      <Header onClick={() => window.history.back()} />
-      <div className="w-full">
-        {/* <button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={() => setClicked(clicked + 1)}
-      >
-        clean
-      </button> */}
-
-        {/* temporarly based on clicked variable need to add ani*/}
-        <DropDown text="Cleaning Data" view={CleaningStepData} />
-        {analysis?.designResult && (
-          <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
-        )}
-        {analysis?.hypothesisTestingResult && (
-          <DropDown
-            text="Running Statistical Tests"
-            view={analysis.hypothesisTestingResult}
-          />
-        )}
-        {/* {analysis?.cleanResult && (
+    return (
+        <div className="bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)]">
+            <Header onClick={() => window.history.back()} />
+            <div className="w-full mt-20 flex flex-col gap-10">
+                <DropDown
+                    text="Cleaning Data"
+                    view={CleaningStepData}
+                />
+                {analysis?.designResult && (
+                    <DropDown
+                        text="Designing Analysis Procedure"
+                        view={DesignStepData}
+                    />
+                )}
+                {/* {analysis?.hypothesisTestingResult && (
+                <DropDown
+                    text="Running Statistical Tests"
+                    view={hypothesisTestingResult}
+                />
+            )} */}
+                {/* {analysis?.cleanResult && (
                 <DropDown
                     text="Found Data!"
                     view={tempData}
