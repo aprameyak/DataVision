@@ -58,18 +58,20 @@ export default function Chat({
       if (onSendMessage) {
         responseContent = await onSendMessage(inputMessage);
       } else {
+        const inputData = {
+          message: inputMessage,
+          history: messages.map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+          })),
+        };
+        console.log("inputData: ", inputData);
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            message: inputMessage,
-            history: messages.map((msg) => ({
-              role: msg.role,
-              content: msg.content,
-            })),
-          }),
+          body: JSON.stringify(inputData),
         });
 
         if (!response.ok) {
@@ -77,8 +79,9 @@ export default function Chat({
         }
 
         const data = await response.json();
+        console.log("data: ", data);
         responseContent =
-          data.message || "Sorry, I couldn't process your request.";
+          data.reply || "Sorry, I couldn't process your request.";
       }
 
       const assistantMessage: Message = {
@@ -114,7 +117,7 @@ export default function Chat({
   };
 
   return (
-    <div className="border w-80 rounded-lg shadow-md">
+    <div className="border w-4/5 mt-5 rounded-lg shadow-md">
       <div className="bg-gray-100 p-4 rounded-t-lg border-b">
         <h3 className="font-semibold text-gray-800">{title}</h3>
       </div>

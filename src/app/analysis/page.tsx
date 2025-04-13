@@ -210,7 +210,7 @@ export default function Analysis() {
                 />
             )} */}
       </div>
-      <div className="flex w-full bg-red-100 justify-center items-center">
+      <div className="flex w-full justify-center items-center">
         <Chat></Chat>
       </div>
       <Footer />
