@@ -4,6 +4,10 @@
 ![Flask](https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white&style=for-the-badge)
 ![LangGraph](https://img.shields.io/badge/LangGraph-FFCC00?style=for-the-badge)
 ![Gemini API](https://img.shields.io/badge/Gemini%20API-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white&style=for-the-badge)
+![SciPy](https://img.shields.io/badge/SciPy-8CAAE6?logo=scipy&logoColor=white&style=for-the-badge)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C?logo=matplotlib&logoColor=white&style=for-the-badge)
+![Seaborn](https://img.shields.io/badge/Seaborn-4479A1?logo=seaborn&logoColor=white&style=for-the-badge)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white&style=for-the-badge)
 ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB&style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white&style=for-the-badge)
@@ -15,13 +19,17 @@
 ## About
 
 **DataVision** turns raw CSV files into real‑time, AI‑powered business insights.  
-An agentic backend—built with **LangGraph** and powered by **Gemini API**—cleans data, runs hypothesis tests, and streams p‑values & visuals to a responsive frontend, giving small‑business owners clarity without complexity.
+An agentic backend—built with **LangGraph** and powered by **Gemini API**—cleans data, runs hypothesis tests, and streams p‑values & richly‑styled visuals to a responsive frontend, providing clarity without complexity.
 
 ## Features
 
 - **Automated Pipeline:** One‑click ingest → clean → normalize → analyze.  
-- **Statistical Insight:** Auto‑selects & executes the best hypothesis tests.  
-- **Instant Visuals:** Generates plots and dashboards the moment results are ready.  
+- **Statistical Insight:**  
+  - `pandas` handles data wrangling and feature extraction.  
+  - `SciPy` selects and runs the most appropriate hypothesis tests.  
+- **Instant Visuals:**  
+  - `Matplotlib` & `Seaborn` generate publication‑quality plots (trends, distributions, correlations).  
+  - All charts are serialized as SVG/PNG and streamed to the UI for immediate rendering.  
 - **AI‑Driven Exploration:** Gemini‑powered chat lets users request custom analyses or deeper dives.  
 - **Real‑Time UX:** Live progress tracker keeps users informed at every step.
 
@@ -30,6 +38,6 @@ An agentic backend—built with **LangGraph** and powered by **Gemini API**—cl
 | Layer | Tools & Frameworks |
 |-------|--------------------|
 | **Languages** | Python • TypeScript |
-| **Backend** | Flask • LangGraph • Gemini API • Gunicorn • Nginx |
+| **Backend** | Flask • LangGraph • Gemini API • pandas • SciPy • Matplotlib • Seaborn • Gunicorn • Nginx |
 | **Frontend** | React • Next.js • TailwindCSS |
 | **Cloud & Hosting** | Azure VM |
