@@ -151,7 +151,6 @@ export default function Home() {
         setTimeout(() => {
           router.push("/analysis?" + params.toString());
         }, 700); // Match this to your duration value
-
       } catch (error) {
         setIsFadingOut(false);
         toast.error("Error processing file", {
@@ -170,13 +169,19 @@ export default function Home() {
   };
 
   return (
-    <div className={`
+    <div
+      className={`
       bg-white flex justify-center items-center w-full h-screen 
       font-[family-name:var(--font-geist-sans)] 
       transition-all duration-700 ease-out 
-      ${pageLoaded ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-6'}
-      ${isFadingOut ? 'opacity-0 transform -translate-y-6' : ''}
-    `}>
+      ${
+        pageLoaded
+          ? "opacity-100 transform translate-y-0"
+          : "opacity-0 transform translate-y-6"
+      }
+      ${isFadingOut ? "opacity-0 transform -translate-y-6" : ""}
+    `}
+    >
       <div className="flex flex-col gap-6 row-start-2 items-center justify-center w-3/4">
         <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">
           <p className="text-5xl m-auto">DataVision</p>
@@ -209,16 +214,22 @@ export default function Home() {
                   text-lg text-center flex-col gap-2 m-auto px-20 py-10 
                   border-2 border-dashed cursor-pointer flex items-center 
                   rounded-md text-primary transition-all duration-200
-                  ${isDragging
-                    ? 'border-primary bg-primary/10 scale-105'
-                    : 'border-primary/50 hover:bg-primary/5'
+                  ${
+                    isDragging
+                      ? "border-primary bg-primary/10 scale-105"
+                      : "border-primary/50 hover:bg-primary/5"
                   }
                   ${isLoading ? "opacity-50 pointer-events-none" : ""}
                 `}
               >
-                <Upload className={`h-8 aspect-square transition-transform duration-200 ${isDragging ? 'scale-110' : ''}`} />
-                {isDragging ? 'Drop CSV Here' : 'Upload CSV'}
-                <p className="text-sm text-gray-500 mt-1">or drag and drop file here</p>
+                <Upload
+                  className={`h-8 aspect-square transition-transform duration-200 ${
+                    isDragging ? "scale-110" : ""
+                  }`}
+                />
+                {isDragging ? "Drop CSV Here" : "Upload CSV"}
+                <p className="text-lg text-primary">or</p>
+                <p className="text-lg text-primary">Drag and drop file here</p>
               </label>
             </div>
           )}
