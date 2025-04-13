@@ -21,6 +21,8 @@
 
 ## 🌐 Web App: [www.data-vision.tech](http://www.data-vision.tech/)
 
+## 🎬 Video Demo: [https://youtu.be/DR2BjuHC1mY](https://youtu.be/DR2BjuHC1mY)
+
 ## 📊 About
 
 **DataVision** turns raw CSV files into real‑time, AI‑powered business insights.  
