@@ -1,6 +1,6 @@
-<div>
-  <img src="public/logo.png" alt="DataVision Logo" width="100" height="100" />
-  <h1>DataVision</h1>
+<div align="center" style="display: flex; gap: 10px;">
+  <img src="public/logo.png" alt="DataVision Logo" width="35" height="35" />
+  <h1 style="margin: 0;">DataVision</h1>
 </div>
 
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white&style=for-the-badge)
