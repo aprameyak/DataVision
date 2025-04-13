@@ -33,14 +33,15 @@ Here is the overview of the dataframe:
 """)
 
 summarize_prompt_template = PromptTemplate.from_template("""
-A person gave an expert data scientist a csv and the data scientist cleaned it, hypothesized some potentially
+You are an expert data scientist. 
+A person gave you a csv and you cleaned it, hypothesized some potentially
 interesting relationships between the data, and ran some tests on the data. Your job is to summarize the results
-of what the data scientist did and what they found in a digestible paragraph.
+of what you did and what you found in a digestible paragraph.
 
 You will be provided with the following items:
-- A summary of the cleaning that the data scientist did
-- The potential relationships the data scientist decided to explore
-- The p-values of the tests that the data scientist ran
+- A summary of the cleaning that you did
+- The potential relationships that you decided to explore
+- The p-values of the tests that you ran
 
 Respond with only the summary paragraph and no additional text or explanation.
 
