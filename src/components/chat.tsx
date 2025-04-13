@@ -80,7 +80,6 @@ export default function Chat() {
         throw new Error("Failed to get response");
       }
 
-
       const data = await response.json();
       console.log("data: ", data);
       responseContent = data.reply + "\n\n" + data.result;
@@ -118,10 +117,17 @@ export default function Chat() {
   };
 
   return (
-    <div className={`border w-full m-auto rounded-lg transition-all duration-700 ease-in-out ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
-      }`}>
+    <div
+      className={`border w-full m-auto font-[family-name:var(--font-geist-sans)] rounded-lg transition-all duration-700 ease-in-out ${
+        isVisible
+          ? "opacity-100 transform translate-y-0"
+          : "opacity-0 transform translate-y-4"
+      }`}
+    >
       <div className="bg-gray-100 py-4 px-5 rounded-t-lg border-b">
-        <h3 className="font-bold text-lg text-primary">Data Analysis Assistant</h3>
+        <h3 className="font-bold text-lg text-primary">
+          Data Analysis Assistant
+        </h3>
       </div>
 
       <div className="h-80 overflow-y-auto p-4 space-y-4 bg-gray-50">
@@ -133,15 +139,19 @@ export default function Chat() {
             }`}
           >
             <div
-              className={`max-w-3/4 p-3 rounded-lg ${message.role === "user"
-                ? "bg-primary text-white rounded-br-none"
-                : "bg-gray-200 border-primary text-primary rounded-bl-none"
-                }`}
+              className={`max-w-3/4 p-3 rounded-lg ${
+                message.role === "user"
+                  ? "bg-primary text-white rounded-br-none"
+                  : "bg-gray-200 border-primary text-primary rounded-bl-none"
+              }`}
             >
               {message.content}
               <div
-                className={`text-xs mt-1 ${message.role === "user" ? "text-blue-100" : "text-muted-foreground"
-                  }`}
+                className={`text-xs mt-1 ${
+                  message.role === "user"
+                    ? "text-blue-100"
+                    : "text-muted-foreground"
+                }`}
               >
                 {message.timestamp.toLocaleTimeString([], {
                   hour: "2-digit",

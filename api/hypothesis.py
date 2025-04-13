@@ -27,6 +27,8 @@ hypothesis_testing_prompt_template = PromptTemplate.from_template("""
     assumptions aren't met, still create a figure but note the issue visually and return None as the p-value.
     The function must return exactly the same number of figures as p-values.
     
+    For the visualizations, use this color: #6599c9
+    
     Have the function return a tuple containing:
     1. A list of all the figures created (do not show the figures in the function).
     2. A list of p-values corresponding to the hypothesis tests performed. Use None for skipped tests. These should be
