@@ -39,7 +39,7 @@ An agentic backend—built with **LangGraph** and powered by **Gemini API**—cl
 |-------|--------------------|
 | **Languages** | Python • TypeScript |
 | **Backend** | Flask • LangGraph • Gemini API • pandas • SciPy • Matplotlib • Seaborn • Gunicorn • Nginx |
-| **Frontend** | React • Next.js • TailwindCSS |
+| **Frontend** | Next.js • TailwindCSS |
 | **Cloud & Hosting** | Azure VM |
 
 ![2025-04-13 02-51-35](https://github.com/user-attachments/assets/c4546767-9ad2-44b5-9be6-b538bb63ceb1)
