@@ -23,6 +23,8 @@ Your output should look like this:
     "code": "def analyze(df):\n    # Your code here\n    return result"
 }}
 
+If you can answer the question without writing any code, you can just return the reply and leave the code blank.
+
 Here is the user's message:
 {user_message}
 
@@ -51,18 +53,24 @@ def chatllm(data, llm):
         json_output = json.loads(llm_output)
         reply = json_output['reply']
         code = json_output['code']
-
-        local_env = {}
-        exec(code, local_env)
-        analyze_function = local_env.get("analyze")
-
-        if analyze_function:
-            result = analyze_function(df)
+        if code == "":
             return jsonify({
                 "reply": reply,
                 "code": code,
-                "result": result
+                "result": ""
             })
+        else:
+            local_env = {}
+            exec(code, local_env)
+            analyze_function = local_env.get("analyze")
+
+            if analyze_function:
+                result = analyze_function(df)
+                return jsonify({
+                    "reply": reply,
+                    "code": code,
+                    "result": result
+                })
             
     except Exception as e:
         return jsonify({"error": str(e)})
