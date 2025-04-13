@@ -16,7 +16,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 
-df = pd.read_csv("customers-100.csv")
+df = None
 
 class AgentState(TypedDict):
     messages: Annotated[list[dict], add_messages]
@@ -95,8 +95,11 @@ Here is the overview of the dataframe:
 {data_overview}
 """)
 
-# Enhanced entrypoint function
-def design_procedure(df: pd.DataFrame):
+# Enhanced entrypoint function``
+def design_procedure(new_df: pd.DataFrame):
+    global df
+    df = new_df
+
     data_overview = f"Columns: {list(df.columns)}\nSample:\n{df.head(2).to_string()}"
     initial_prompt = design_procedure_prompt.format(data_overview=data_overview)
         
