@@ -10,26 +10,15 @@ interface Message {
   timestamp: Date;
 }
 
-interface ChatProps {
-  initialMessages?: Message[];
-  onSendMessage?: (message: string) => Promise<string>;
-  title?: string;
-}
-
-export default function Chat({
-  initialMessages = [
+export default function Chat() {
+  const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content:
-        "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
+      content: "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
       role: "assistant",
       timestamp: new Date(),
     },
-  ],
-  onSendMessage,
-  title = "Data Analysis Assistant",
-}: ChatProps) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -55,31 +44,28 @@ export default function Chat({
     try {
       let responseContent = "";
 
-      if (onSendMessage) {
-        responseContent = await onSendMessage(inputMessage);
-      } else {
-        const response = await fetch("/api/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: inputMessage,
-            history: messages.map((msg) => ({
-              role: msg.role,
-              content: msg.content,
-            })),
-          }),
-        });
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: inputMessage,
+          history: messages.map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+          })),
+        }),
+      });
 
-        if (!response.ok) {
-          throw new Error("Failed to get response");
-        }
-
-        const data = await response.json();
-        responseContent =
-          data.message || "Sorry, I couldn't process your request.";
+      if (!response.ok) {
+        throw new Error("Failed to get response");
       }
+
+      const data = await response.json();
+      responseContent =
+        data.message || "Sorry, I couldn't process your request.";
+
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -114,31 +100,28 @@ export default function Chat({
   };
 
   return (
-    <div className="border w-80 rounded-lg shadow-md">
-      <div className="bg-gray-100 p-4 rounded-t-lg border-b">
-        <h3 className="font-semibold text-gray-800">{title}</h3>
+    <div className="border w-full m-auto rounded-lg">
+      <div className="bg-gray-50 py-4 px-5 rounded-t-lg border-b">
+        <h3 className="font-bold text-lg text-primary">Data Analysis Assitant</h3>
       </div>
 
       <div className="h-80 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${
-              message.role === "user" ? "justify-end" : "justify-start"
-            }`}
+            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+              }`}
           >
             <div
-              className={`max-w-3/4 p-3 rounded-lg ${
-                message.role === "user"
-                  ? "bg-blue-500 text-white rounded-br-none"
-                  : "bg-gray-200 text-gray-800 rounded-bl-none"
-              }`}
+              className={`max-w-3/4 p-3 rounded-lg ${message.role === "user"
+                ? "bg-primary text-white rounded-br-none"
+                : "bg-gray-200 text-gray-800 rounded-bl-none"
+                }`}
             >
               {message.content}
               <div
-                className={`text-xs mt-1 ${
-                  message.role === "user" ? "text-blue-100" : "text-gray-500"
-                }`}
+                className={`text-xs mt-1 ${message.role === "user" ? "text-blue-100" : "text-gray-500"
+                  }`}
               >
                 {message.timestamp.toLocaleTimeString([], {
                   hour: "2-digit",
@@ -169,9 +152,6 @@ export default function Chat({
       </div>
 
       <div className="p-3 border-t flex gap-2">
-        <Button variant="outline" size="icon" className="shrink-0">
-          <Paperclip className="h-5 w-5" />
-        </Button>
         <Input
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
@@ -184,8 +164,8 @@ export default function Chat({
           disabled={isLoading || !inputMessage.trim()}
           className="shrink-0"
         >
-          <Send className="h-5 w-5 mr-1" />
-          Send
+          <Send className="h-5 w-5" />
+          {/* Send */}
         </Button>
       </div>
     </div>
