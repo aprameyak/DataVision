@@ -1,5 +1,6 @@
 import { ChevronLeft } from "lucide-react";
 import { Button } from "./ui/button";
+import Logo from "./logo";
 
 export default function Header({ onClick }: { onClick: () => void }) {
     return (
@@ -7,7 +8,9 @@ export default function Header({ onClick }: { onClick: () => void }) {
             <Button onClick={onClick} variant="link" className="absolute left-5 cursor-pointer" size="icon">
                 <ChevronLeft style={{ scale: 2 }} />
             </Button>
-            <p className="text-4xl w-fit m-auto cursor-pointer" onClick={onClick}>DataVision</p>
+            <p className="text-4xl w-fit m-auto cursor-pointer" onClick={onClick}>
+                <Logo />
+            </p>
         </div>
     );
 }
