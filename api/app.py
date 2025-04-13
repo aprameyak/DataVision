@@ -10,6 +10,7 @@ import utils
 import chat
 import pandas as pd
 import uuid
+import atexit
 
 app = Flask(__name__)
 
@@ -28,6 +29,26 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def get_file_path(id):
     return os.path.join(UPLOAD_FOLDER, f"{id}.csv")
+
+uploaded_files = set()
+
+def cleanup_files():
+    for file_path in uploaded_files:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+atexit.register(cleanup_files)
+
+@app.route('/api/delete_file', methods=['POST'])
+def delete_file():
+    id = request.json.get('id')
+    file_path = get_file_path(id)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        uploaded_files.discard(file_path)
+        return jsonify({"message": "File deleted successfully"}), 200
+    return jsonify({"error": "File not found"}), 404
+
 
 
 @app.route('/api/test')
