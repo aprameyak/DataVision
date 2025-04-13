@@ -28,12 +28,12 @@ export default function Analysis() {
     const load = async () => {
       const cleanSummary = await cleanData();
       const designRes = await designProcedure();
-      const hypothesisTestRes = await hypothesisTest(designRes ?? null);
-      await summarize(
-        cleanSummary,
-        designRes ?? null,
-        hypothesisTestRes ?? null
-      );
+      await hypothesisTest(designRes ?? null);
+      // await summarize(
+      //   cleanSummary ?? null,
+      //   designRes ?? null,
+      //   "p values go here"
+      // );
     };
 
     load();
@@ -178,7 +178,7 @@ export default function Analysis() {
     return <SyntaxHighlighter language="javascript">{code}</SyntaxHighlighter>;
   };
 
-  const CleaningStepData = (
+  const CleaningStepData = analysis?.cleanResult && (
     <div className="flex flex-col gap-2">
       <span className="font-bold">Summary:</span>
       <p>{cleanSummary}</p>
@@ -206,9 +206,8 @@ export default function Analysis() {
 
   return (
     <div
-      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
+      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"
+        }`}
     >
       <Header onClick={() => window.history.back()} />
       <div className=" w-[80%] py-10 mx-auto flex flex-col gap-10">
