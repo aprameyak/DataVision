@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Send, Paperclip } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 interface Message {
   id: string;
@@ -33,6 +34,9 @@ export default function Chat({
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+
+  const id = searchParams.get("id");
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
