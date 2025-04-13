@@ -11,6 +11,10 @@ import Header from "@/components/header";
 
 export default function Analysis() {
   const [isVisible, setIsVisible] = useState(false);
+  const [cleaningVisible, setCleaningVisible] = useState(false);
+  const [designVisible, setDesignVisible] = useState(false);
+  const [testingVisible, setTestingVisible] = useState(false);
+
   const tempData =
     "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
 
@@ -26,10 +30,15 @@ export default function Analysis() {
     // Trigger fade-in animation after component mounts
     setIsVisible(true);
 
+    // Stagger the appearance of each section
+    setTimeout(() => setCleaningVisible(true), 300);
+
     const load = async () => {
       const cleanSummary = await cleanData();
       const designRes = await designProcedure();
+      setTimeout(() => setDesignVisible(true), 300);
       await hypothesisTest(designRes ?? null);
+      setTimeout(() => setTestingVisible(true), 300);
       await summarize(
         cleanSummary ?? null,
         designRes ?? null,
@@ -189,25 +198,33 @@ export default function Analysis() {
   );
 
   return (
-    <div className="bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)]">
+    <div
+      className={`bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+    >
       <Header onClick={() => window.history.back()} />
       <div className="w-full mt-20 flex flex-col gap-10">
-        <DropDown text="Cleaning Data" view={CleaningStepData} />
+        <div className={`transition-all duration-500 ease-in-out ${cleaningVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
+          }`}>
+          <DropDown text="Cleaning Data" view={CleaningStepData} />
+        </div>
+
         {analysis?.designResult && (
-          <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
+          <div className={`transition-all duration-500 ease-in-out ${designVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
+            }`}>
+            <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
+          </div>
         )}
+
         {analysis?.hypothesisTestingResult && (
-          <DropDown
-            text="Running Statistical Tests"
-            view={analysis.hypothesisTestingResult}
-          />
+          <div className={`transition-all duration-500 ease-in-out ${testingVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
+            }`}>
+            <DropDown
+              text="Running Statistical Tests"
+              view={analysis.hypothesisTestingResult}
+            />
+          </div>
         )}
-        {/* {analysis?.cleanResult && (
-                <DropDown
-                    text="Found Data!"
-                    view={tempData}
-                />
-            )} */}
       </div>
       <Footer />
     </div>
