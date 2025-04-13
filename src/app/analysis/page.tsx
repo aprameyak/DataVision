@@ -184,45 +184,21 @@ export default function Analysis() {
     </div>
   );
 
-  //   const HypothesisTestingStepData = (
-  //     <div className="flex flex-col gap-2">
-  //       <span className="font-bold">Hypothesis Testing Results:</span>
-  //       <div className="flex flex-col gap-4 overflow-y-auto max-h-96">
-  //         {analysis?.hypothesisTestingResult.figures.map(
-  //           (base64Str: string, index: number) => (
-  //             <img
-  //               key={`image-${index}`}
-  //               src={`data:image/png;base64,${base64Str}`}
-  //               alt={`Hypothesis Visual ${index + 1}`}
-  //               className="w-full max-w-xl rounded-md border border-gray-300 shadow"
-  //             />
-  //           )
-  //         )}
-  //       </div>
-  //     </div>
-  //   );
-
-    return (
-        <div className="bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)]">
-            <Header onClick={() => window.history.back()} />
-            <div className="w-full mt-20 flex flex-col gap-10">
-                <DropDown
-                    text="Cleaning Data"
-                    view={CleaningStepData}
-                />
-                {analysis?.designResult && (
-                    <DropDown
-                        text="Designing Analysis Procedure"
-                        view={DesignStepData}
-                    />
-                )}
-                {/* {analysis?.hypothesisTestingResult && (
-                <DropDown
-                    text="Running Statistical Tests"
-                    view={hypothesisTestingResult}
-                />
-            )} */}
-                {/* {analysis?.cleanResult && (
+  return (
+    <div className="bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)]">
+      <Header onClick={() => window.history.back()} />
+      <div className="w-full mt-20 flex flex-col gap-10">
+        <DropDown text="Cleaning Data" view={CleaningStepData} />
+        {analysis?.designResult && (
+          <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
+        )}
+        {analysis?.hypothesisTestingResult && (
+          <DropDown
+            text="Running Statistical Tests"
+            view={analysis.hypothesisTestingResult}
+          />
+        )}
+        {/* {analysis?.cleanResult && (
                 <DropDown
                     text="Found Data!"
                     view={tempData}
