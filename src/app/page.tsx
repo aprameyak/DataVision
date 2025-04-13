@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/components/footer";
 import Spinner from "@/components/spinner";
+import Logo from "@/components/logo";
 
 export default function Home() {
   const [file, setFile] = useState<File>();
@@ -184,7 +185,7 @@ export default function Home() {
     >
       <div className="flex flex-col gap-6 row-start-2 items-center justify-center w-3/4">
         <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">
-          <p className="text-5xl m-auto">DataVision</p>
+          <Logo />
           <i className="text-center w-full">
             Your intelligent assistant for exploring data, testing hypotheses,
             and generating visuals.
