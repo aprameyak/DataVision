@@ -32,7 +32,7 @@ Here is the overview of the dataframe:
 {data_overview}
 """)
 
-def data_clean(df, llm):
+def data_clean(df, llm, file_path):
     data_overview = utils.overview_data(df)
     clean_data_prompt = clean_data_prompt_template.format(data_overview=data_overview)
     llm_output = utils.cleanCode(llm.invoke(clean_data_prompt))
@@ -49,6 +49,8 @@ def data_clean(df, llm):
 
             if clean_function:
                 cleaned_df = clean_function(df)
+                # cleaned_df.to_csv(file_path, index=False)
+
                 csv_buffer = io.StringIO()
                 cleaned_df.to_csv(csv_buffer, index=False)
                 csv_string = csv_buffer.getvalue()

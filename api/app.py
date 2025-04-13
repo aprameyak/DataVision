@@ -57,7 +57,8 @@ def clean_data():
         
     try:
         df = pd.read_csv(get_file_path(id))
-        cleaning_result = clean.data_clean(df, llm)
+        file_path = get_file_path(id)
+        cleaning_result = clean.data_clean(df, llm, file_path)
         return cleaning_result
     except Exception as e:
         return f"An error occurred while processing the file: {str(e)}", 500
