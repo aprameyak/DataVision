@@ -8,6 +8,7 @@ import { ChevronLeft } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
+import Chat from "@/components/chat";
 
 export default function Analysis() {
   const [isVisible, setIsVisible] = useState(false);
@@ -208,6 +209,9 @@ export default function Analysis() {
                     view={tempData}
                 />
             )} */}
+      </div>
+      <div className="flex w-full bg-red-100 justify-center items-center">
+        <Chat></Chat>
       </div>
       <Footer />
     </div>

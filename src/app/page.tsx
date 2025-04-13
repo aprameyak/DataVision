@@ -13,7 +13,6 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-
   // Run handleUpload when file changes
   useEffect(() => {
     if (file) {
@@ -42,7 +41,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error:", error);
     }
-  }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -94,7 +93,6 @@ export default function Home() {
     }
   };
 
-
   return (
     <div className="bg-white flex justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
       {!file && (
@@ -125,8 +123,9 @@ export default function Home() {
                 />
                 <label
                   htmlFor="fileUpload"
-                  className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${isLoading ? "opacity-50 pointer-events-none" : ""
-                    }`}
+                  className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${
+                    isLoading ? "opacity-50 pointer-events-none" : ""
+                  }`}
                 >
                   <Upload className="h-8 aspect-square" />
                   Upload CSV
