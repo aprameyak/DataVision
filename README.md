@@ -1,5 +1,5 @@
-<div align="center" style="display: flex; flex-direction: row; gap: 10px;">
-  <img src="public/logo.png" alt="DataVision Logo" width="35" height="35" />
+<div align="center" style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+  <img src="public/logo.png" alt="DataVision Logo" width="50" height="50" />
   <h1 style="margin: 0;">DataVision</h1>
 </div>
 
