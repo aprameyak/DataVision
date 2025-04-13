@@ -27,7 +27,7 @@ export default function Analysis() {
     const load = async () => {
       const cleanSummary = await cleanData();
       const designRes = await designProcedure();
-      // await hypothesisTest(designRes ?? null);
+      await hypothesisTest(designRes ?? null);
       // await summarize(
       //   cleanSummary ?? null,
       //   designRes ?? null,

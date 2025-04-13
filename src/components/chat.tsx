@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Send } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 interface Message {
   id: string;
@@ -14,7 +15,8 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
+      content:
+        "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
       role: "assistant",
       timestamp: new Date(),
     },
@@ -23,6 +25,9 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+
+  const id = searchParams.get("id");
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -60,6 +65,7 @@ export default function Chat() {
           role: msg.role,
           content: msg.content,
         })),
+        id: id,
       };
 
       const response = await fetch("/api/chat", {
@@ -77,8 +83,7 @@ export default function Chat() {
 
       const data = await response.json();
       console.log("data: ", data);
-      responseContent =
-        data.reply || "Sorry, I couldn't process your request.";
+      responseContent = data.reply + "\n\n" + data.result;
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -123,8 +128,9 @@ export default function Chat() {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
-              }`}
+            className={`flex ${
+              message.role === "user" ? "justify-end" : "justify-start"
+            }`}
           >
             <div
               className={`max-w-3/4 p-3 rounded-lg ${message.role === "user"

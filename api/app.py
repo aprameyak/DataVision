@@ -7,6 +7,7 @@ import design
 import hypothesis
 import summarize
 import utils
+import chat
 import pandas as pd
 import uuid
 
@@ -94,11 +95,9 @@ def summarize_analysis():
 
 
 @app.route("/api/chat", methods=['POST'])
-def chat():
+def llm_chat():
     data = request.get_json()
-    print("Received chat data:", data)
-
-    return utils.chatllm(data, llm)
+    return chat.chatllm(data, llm)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
