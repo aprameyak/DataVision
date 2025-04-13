@@ -20,20 +20,22 @@ export default function DropDown({
             <p className={`${view ? "" : "loading"} text-[17px]`}>{text}</p>
           </AccordionTrigger>
           <AccordionContent>
-            {text === "Running Statistical Tests" ?
+            {text === "Running Statistical Tests" ? (
               <div className="flex flex-col gap-4 overflow-y-auto max-h-96">
-                {view.map((base64Str: string, index: number) => (
-                  <img
-                    key={`image-${index}`}
-                    src={`data:image/png;base64,${base64Str}`}
-                    alt={`Hypothesis Visual ${index + 1}`}
-                    className="w-full max-w-xl rounded-md border border-gray-300 shadow"
-                  />
+                {view.figures.map((base64Str: string, index: number) => (
+                  <div key={`image-${index}`}>
+                    <img
+                      src={`data:image/png;base64,${base64Str}`}
+                      alt={`Hypothesis Visual ${index + 1}`}
+                      className="w-full max-w-xl rounded-md border border-gray-300 shadow"
+                    />
+                    <p>{view.p_values[index]}</p>
+                  </div>
                 ))}
               </div>
-              :
+            ) : (
               view
-            }
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>
