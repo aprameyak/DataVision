@@ -19,7 +19,7 @@
 ## About
 
 **DataVision** turns raw CSV files into real‑time, AI‑powered business insights.  
-An agentic backend—built with **LangGraph** and powered by **Gemini API**—cleans data, runs hypothesis tests, and streams p‑values & richly‑styled visuals to a responsive frontend, providing clarity without complexity.
+An agentic backend—built with **LangGraph** and powered by **Gemini API**—cleans data, runs hypothesis tests, and streams p‑values & richly‑styled visuals to a responsive frontend, giving small‑business owners clarity without complexity.
 
 ## Features
 
@@ -41,3 +41,6 @@ An agentic backend—built with **LangGraph** and powered by **Gemini API**—cl
 | **Backend** | Flask • LangGraph • Gemini API • pandas • SciPy • Matplotlib • Seaborn • Gunicorn • Nginx |
 | **Frontend** | React • Next.js • TailwindCSS |
 | **Cloud & Hosting** | Azure VM |
+
+![2025-04-13 02-51-35](https://github.com/user-attachments/assets/c4546767-9ad2-44b5-9be6-b538bb63ceb1)
+
