@@ -40,28 +40,19 @@ export default function DropDown({
         className="shadow-skm border rounded-lg bg-gray-50 overflow-hidden mx-auto"
       >
         <AccordionItem value={`item-${text}`}>
-          <AccordionTrigger onClick={() => setIsOpen(!isOpen)} disabled={!view} className={`${isOpen ? `border-b` : ``} bg-gray-100 rounded-b-none px-5 cursor-pointer`}>
+          <AccordionTrigger
+            onClick={() => setIsOpen(!isOpen)}
+            disabled={!view}
+            className={`${
+              isOpen ? `border-b` : ``
+            } bg-gray-100 rounded-b-none px-5 cursor-pointer`}
+          >
             <div className="flex flex-row gap-5">
               <p className="text-lg font-medium">{text}</p>
             </div>
           </AccordionTrigger>
           <AccordionContent className="pl-3 pr-7 w-full mt-4 ">
-            {text === "Running Statistical Tests" ? (
-              <div className="flex flex-col w-full items-center gap-4 overflow-y-auto max-h-[500px]">
-                {view.figures.map((base64Str: string, index: number) => (
-                  <div key={`image-${index}`}>
-                    <img
-                      src={`data:image/png;base64,${base64Str}`}
-                      alt={`Hypothesis Visual ${index + 1}`}
-                      className="w-full max-w-xl rounded-md border border-gray-300 shadow"
-                    />
-                    <p className="text-center py-2">{view.p_values[index]}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              view
-            )}
+            {view}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

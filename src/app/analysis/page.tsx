@@ -21,19 +21,19 @@ export default function Analysis() {
   const id = searchParams.get("id");
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
     setIsVisible(true);
 
     const load = async () => {
       const cleanSummary = await cleanData();
       const designRes = await designProcedure();
-      await hypothesisTest(designRes ?? null);
-      // await summarize(
-      //   cleanSummary ?? null,
-      //   designRes ?? null,
-      //   "p values go here"
-      // );
+      const hypothesisTestRes = await hypothesisTest(designRes ?? null);
+      await summarize(
+        cleanSummary,
+        designRes ?? null,
+        hypothesisTestRes ?? null
+      );
     };
 
     load();
@@ -204,16 +204,39 @@ export default function Analysis() {
     </div>
   );
 
+  const HypothesisTestingData = analysis?.hypothesisTestingResult && (
+    <div className="flex flex-col w-full items-center gap-4 overflow-y-auto max-h-[500px]">
+      {analysis.hypothesisTestingResult.figures.map(
+        (base64Str: string, index: number) => (
+          <div key={`image-${index}`}>
+            <img
+              src={`data:image/png;base64,${base64Str}`}
+              alt={`Hypothesis Visual ${index + 1}`}
+              className="w-full max-w-xl rounded-md border border-gray-300 shadow"
+            />
+            <p className="text-center py-2">
+              {analysis.hypothesisTestingResult.p_values[index]}
+            </p>
+          </div>
+        )
+      )}
+    </div>
+  );
+
   return (
     <div
-      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"
-        }`}
+      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
     >
       <Header onClick={() => window.history.back()} />
       <div className=" w-[80%] py-10 mx-auto flex flex-col gap-10">
         <DropDown text="Cleaning Data" view={CleaningStepData} />
         <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
-        {/* <DropDown text="Running Statistical Tests" view={analysis?.hypothesisTestingResult} /> */}
+        <DropDown
+          text="Running Statistical Tests"
+          view={HypothesisTestingData}
+        />
         <DropDown text="Analysis Summary" view={AnalysisSummaryData} />
 
         <Chat />
