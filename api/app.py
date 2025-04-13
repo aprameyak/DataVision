@@ -54,7 +54,6 @@ def upload_file():
 @app.route('/api/data_cleaning', methods=['POST'])
 def clean_data():
     id = request.json.get('id')
-        
     try:
         df = pd.read_csv(get_file_path(id))
         file_path = get_file_path(id)

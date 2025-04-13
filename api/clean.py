@@ -49,7 +49,7 @@ def data_clean(df, llm, file_path):
 
             if clean_function:
                 cleaned_df = clean_function(df)
-                # cleaned_df.to_csv(file_path, index=False)
+                cleaned_df.to_csv(file_path, index=False)
 
                 csv_buffer = io.StringIO()
                 cleaned_df.to_csv(csv_buffer, index=False)
