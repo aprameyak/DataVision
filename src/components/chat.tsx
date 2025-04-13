@@ -62,12 +62,12 @@ export default function Chat() {
       if (!response.ok) {
         throw new Error("Failed to get response");
       }
+      
 
         const data = await response.json();
         console.log("data: ", data);
         responseContent =
           data.reply || "Sorry, I couldn't process your request.";
-      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
