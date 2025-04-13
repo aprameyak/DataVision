@@ -1,4 +1,4 @@
-<div align="center" style="display: flex; gap: 10px;">
+<div align="center" style="display: flex; flex-direction: row; gap: 10px;">
   <img src="public/logo.png" alt="DataVision Logo" width="35" height="35" />
   <h1 style="margin: 0;">DataVision</h1>
 </div>
