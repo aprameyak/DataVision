@@ -10,6 +10,7 @@ import Footer from "@/components/footer";
 export default function Home() {
   const [file, setFile] = useState<File>();
   const [isLoading, setIsLoading] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -76,14 +77,23 @@ export default function Home() {
         const id = await uploadFile();
         const params = new URLSearchParams(searchParams);
         params.set("id", id);
-        router.push("/analysis?" + params.toString());
+
+        // Trigger fade-out animation
+        setIsFadingOut(true);
+
+        // Wait for animation to complete before navigating
+        setTimeout(() => {
+          router.push("/analysis?" + params.toString());
+        }, 700); // Match this to your duration value
+
       } catch (error) {
+        setIsFadingOut(false);
         toast.error("Error processing file", {
           description: "An unexpected error occurred",
         });
         console.error("Error:", error);
       } finally {
-        setIsLoading(false);
+        // Note: We don't reset isLoading here since we're navigating away
       }
     } else if (!file) {
       console.log("No file selected");
@@ -94,47 +104,49 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-white flex justify-center items-center w-full h-screen font-[family-name:var(--font-geist-sans)]">
-      {!file && (
-        <div className="flex flex-col gap-6 row-start-2 items-center justify-center w-3/4">
-          <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">
-            <p className="text-5xl m-auto">DataVision</p>
-            <i className="text-center w-full">
-              Your intelligent assistant for exploring data, testing hypotheses,
-              and generating visuals.
-            </i>
-          </div>
-
-          <div className="flex flex-col w-full max-w-md gap-4">
-            {isLoading ? (
-              <div className="flex flex-col gap-2 items-center justify-center text-center text-sm text-primary/80">
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Processing your CSV file...
-              </div>
-            ) : (
-              <div className="flex items-center justify-center gap-2">
-                <Input
-                  type="file"
-                  id="fileUpload"
-                  className="hidden"
-                  accept=".csv,text/csv"
-                  onChange={handleFileChange}
-                  disabled={isLoading}
-                />
-                <label
-                  htmlFor="fileUpload"
-                  className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${
-                    isLoading ? "opacity-50 pointer-events-none" : ""
-                  }`}
-                >
-                  <Upload className="h-8 aspect-square" />
-                  Upload CSV
-                </label>
-              </div>
-            )}
-          </div>
+    <div className={`
+      bg-white flex justify-center items-center w-full h-screen 
+      font-[family-name:var(--font-geist-sans)] 
+      transition-all duration-700 ease-out 
+      ${isFadingOut ? 'opacity-0 transform -translate-y-6' : 'opacity-100 transform translate-y-0'}
+    `}>
+      <div className="flex flex-col gap-6 row-start-2 items-center justify-center w-3/4">
+        <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">
+          <p className="text-5xl m-auto">DataVision</p>
+          <i className="text-center w-full">
+            Your intelligent assistant for exploring data, testing hypotheses,
+            and generating visuals.
+          </i>
         </div>
-      )}
+
+        <div className="flex flex-col w-full max-w-md gap-4">
+          {isLoading ? (
+            <div className="flex flex-col gap-2 items-center justify-center text-center text-sm text-primary/80">
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Processing your CSV file...
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-2">
+              <Input
+                type="file"
+                id="fileUpload"
+                className="hidden"
+                accept=".csv,text/csv"
+                onChange={handleFileChange}
+                disabled={isLoading}
+              />
+              <label
+                htmlFor="fileUpload"
+                className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${isLoading ? "opacity-50 pointer-events-none" : ""
+                  }`}
+              >
+                <Upload className="h-8 aspect-square" />
+                Upload CSV
+              </label>
+            </div>
+          )}
+        </div>
+      </div>
       <Footer />
     </div>
   );
