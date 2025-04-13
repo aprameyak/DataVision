@@ -212,7 +212,7 @@ export default function Analysis() {
             <img
               src={`data:image/png;base64,${base64Str}`}
               alt={`Hypothesis Visual ${index + 1}`}
-              className="w-full max-w-xl rounded-md border border-gray-300 shadow"
+              className="w-full max-w-xl rounded-md border"
             />
             <p className="text-center py-2">
               {analysis.hypothesisTestingResult.p_values[index]}
@@ -231,13 +231,10 @@ export default function Analysis() {
     >
       <Header onClick={() => window.history.back()} />
       <div className=" w-[80%] py-10 mx-auto flex flex-col gap-10">
-        <DropDown text="Cleaning Data" view={CleaningStepData} />
-        <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
-        <DropDown
-          text="Running Statistical Tests"
-          view={HypothesisTestingData}
-        />
-        <DropDown text="Analysis Summary" view={AnalysisSummaryData} />
+        <DropDown text="Data Cleaning" view={CleaningStepData} />
+        <DropDown text="Analysis Procedure" view={DesignStepData} />
+        <DropDown text="Statistical Tests" view={HypothesisTestingData} />
+        <DropDown text="Summary" view={AnalysisSummaryData} />
 
         <Chat />
       </div>
