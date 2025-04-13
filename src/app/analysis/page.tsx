@@ -10,6 +10,7 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 
 export default function Analysis() {
+  const [isVisible, setIsVisible] = useState(false);
   const tempData =
     "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
 
@@ -22,6 +23,9 @@ export default function Analysis() {
   const id = searchParams.get("id");
 
   useEffect(() => {
+    // Trigger fade-in animation after component mounts
+    setIsVisible(true);
+
     const load = async () => {
       const cleanSummary = await cleanData();
       const designRes = await designProcedure();
@@ -202,32 +206,35 @@ export default function Analysis() {
   //     </div>
   //   );
 
-    return (
-        <div className="bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)]">
-            <Header onClick={() => window.history.back()} />
-            <div className="w-full mt-20 flex flex-col gap-10">
-                <DropDown
-                    text="Cleaning Data"
-                    view={CleaningStepData}
-                />
-                {analysis?.designResult && (
-                    <DropDown
-                        text="Designing Analysis Procedure"
-                        view={DesignStepData}
-                    />
-                )}
-                {/* {analysis?.hypothesisTestingResult && (
-                <DropDown
-                    text="Running Statistical Tests"
-                    view={hypothesisTestingResult}
-                />
-            )} */}
-                {/* {analysis?.cleanResult && (
-                <DropDown
-                    text="Found Data!"
-                    view={tempData}
-                />
-            )} */}
+  return (
+    <div
+      className={`bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+    >
+      <Header onClick={() => window.history.back()} />
+      <div className="w-full mt-20 flex flex-col gap-10">
+        <DropDown
+          text="Cleaning Data"
+          view={CleaningStepData}
+        />
+        {analysis?.designResult && (
+          <DropDown
+            text="Designing Analysis Procedure"
+            view={DesignStepData}
+          />
+        )}
+        {/* {analysis?.hypothesisTestingResult && (
+          <DropDown
+            text="Running Statistical Tests"
+            view={hypothesisTestingResult}
+          />
+        )} */}
+        {/* {analysis?.cleanResult && (
+          <DropDown
+            text="Found Data!"
+            view={tempData}
+          />
+        )} */}
       </div>
       <Footer />
     </div>
