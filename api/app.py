@@ -91,7 +91,7 @@ def summarize_analysis():
     cleaning_summary = data.get('cleaning_summary')
     potential_relationships = data.get('potential_relationships')
     p_values_summary = data.get('p_values_summary')
-    return summarize.summarize(cleaning_summary, potential_relationships, p_values_summary, llm)
+    return jsonify(summarize.summarize(cleaning_summary, potential_relationships, p_values_summary, llm))
 
 
 @app.route("/api/chat", methods=['POST'])

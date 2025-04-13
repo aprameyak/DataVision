@@ -28,12 +28,12 @@ export default function Analysis() {
     const load = async () => {
       const cleanSummary = await cleanData();
       const designRes = await designProcedure();
-      // await hypothesisTest(designRes ?? null);
-      // await summarize(
-      //   cleanSummary ?? null,
-      //   designRes ?? null,
-      //   "p values go here"
-      // );
+      const hypothesisTestRes = await hypothesisTest(designRes ?? null);
+      await summarize(
+        cleanSummary,
+        designRes ?? null,
+        hypothesisTestRes ?? null
+      );
     };
 
     load();
@@ -105,8 +105,8 @@ export default function Analysis() {
       }
 
       const result = await response.json();
-      console.log("Raw response:", result);
       setAnalysis((prev) => ({ ...prev, hypothesisTestingResult: result }));
+      return result;
     } catch (error) {
       console.error("Error:", error);
     }
@@ -115,15 +115,18 @@ export default function Analysis() {
   const summarize = async (
     cleaning_summary: string | null,
     potential_relationships: string | null,
-    p_values_summary: string | null
+    hypothesisTestingResult: any | null
   ) => {
+    console.log("ANALYSIS: ", hypothesisTestingResult);
     const url = "/api/summarize";
     const data = {
       id: id,
       cleaning_summary,
       potential_relationships,
-      p_values_summary,
+      p_values_summary: hypothesisTestingResult.p_values,
     };
+
+    console.log("DATA: ", data);
 
     try {
       const response = await fetch(url, {
@@ -166,7 +169,6 @@ export default function Analysis() {
       setCleanSummary(null);
       setCodeForCleaning(null);
     }
-    console.log("Summary: ", cleanSummary);
   }, [analysis?.cleanResult]);
 
   const CodeDisplay = ({ code }: { code: string | null }) => {
@@ -204,8 +206,9 @@ export default function Analysis() {
 
   return (
     <div
-      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
+      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
     >
       <Header onClick={() => window.history.back()} />
       <div className=" w-[80%] py-10 mx-auto flex flex-col gap-10">
