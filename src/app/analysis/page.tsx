@@ -12,13 +12,6 @@ import Chat from "@/components/chat";
 
 export default function Analysis() {
   const [isVisible, setIsVisible] = useState(false);
-  const [cleaningVisible, setCleaningVisible] = useState(false);
-  const [designVisible, setDesignVisible] = useState(false);
-  const [testingVisible, setTestingVisible] = useState(false);
-
-  const tempData =
-    "tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData tempData  ";
-
   const [cleanSummary, setCleanSummary] = useState<string | null>(null);
   const [codeForCleaning, setCodeForCleaning] = useState<string | null>(null);
 
@@ -31,20 +24,15 @@ export default function Analysis() {
     // Trigger fade-in animation after component mounts
     setIsVisible(true);
 
-    // Stagger the appearance of each section
-    setTimeout(() => setCleaningVisible(true), 300);
-
     const load = async () => {
       const cleanSummary = await cleanData();
       const designRes = await designProcedure();
-      setTimeout(() => setDesignVisible(true), 300);
-      await hypothesisTest(designRes ?? null);
-      setTimeout(() => setTestingVisible(true), 300);
-      await summarize(
-        cleanSummary ?? null,
-        designRes ?? null,
-        "p values go here"
-      );
+      // await hypothesisTest(designRes ?? null);
+      // await summarize(
+      //   cleanSummary ?? null,
+      //   designRes ?? null,
+      //   "p values go here"
+      // );
     };
 
     load();
@@ -204,33 +192,21 @@ export default function Analysis() {
         }`}
     >
       <Header onClick={() => window.history.back()} />
-      <div className="w-full mt-20 flex flex-col gap-10">
-        <div className={`transition-all duration-500 ease-in-out ${cleaningVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
-          }`}>
-          <DropDown text="Cleaning Data" view={CleaningStepData} />
-        </div>
+      <div className="w-[80%] mt-20 mx-auto flex flex-col gap-10">
+        <DropDown text="Cleaning Data" view={CleaningStepData} />
 
         {analysis?.designResult && (
-          <div className={`transition-all duration-500 ease-in-out ${designVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
-            }`}>
-            <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
-          </div>
+          <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
         )}
 
         {analysis?.hypothesisTestingResult && (
-          <div className={`transition-all duration-500 ease-in-out ${testingVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
-            }`}>
-            <DropDown
-              text="Running Statistical Tests"
-              view={analysis.hypothesisTestingResult}
-            />
-          </div>
+          <DropDown
+            text="Running Statistical Tests"
+            view={analysis.hypothesisTestingResult}
+          />
         )}
+        <Chat />
       </div>
-      <div className="flex w-full justify-center items-center">
-        <Chat></Chat>
-      </div>
-      <Footer />
     </div>
   );
 }
