@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 
 export default function Header({ onClick }: { onClick: () => void }) {
     return (
-        <div className="bg-gray-200 w-screen h-fit p-5">
+        <div className="bg-gray-100 w-screen h-fit p-5">
             <Button onClick={onClick} variant="ghost" className="absolute left-5" size="icon">
                 <ChevronLeft style={{ scale: 2 }} />
             </Button>
