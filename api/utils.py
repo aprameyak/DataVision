@@ -41,17 +41,17 @@ def send_figure_as_response(fig, fmt='png', dpi=100, bbox_inches='tight', **save
 def chatllm(data, llm):
     """Handles chat with conversation history"""
     try:
-        user_msg = data.get("message", "")
-        history = data.get("history", [])
+        user_msg = data.get("message")
+        history = data.get("history")
 
         conversation = history + [{"role": "user", "content": user_msg}]
+        print("Sending to LLM:", conversation)
+
         response = llm.invoke(conversation)
 
-        reply = response.get("content", "")
-
         return jsonify({
-            "reply": reply,
-            "history": conversation + [{"role": "assistant", "content": reply}]
+            "reply": response,
+            "history": conversation + [{"role": "assistant", "content": response}]
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500

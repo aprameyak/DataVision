@@ -43,29 +43,31 @@ export default function Chat() {
 
     try {
       let responseContent = "";
+      const inputData = {
+        message: inputMessage,
+        history: messages.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        })),
+      };
 
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          message: inputMessage,
-          history: messages.map((msg) => ({
-            role: msg.role,
-            content: msg.content,
-          })),
-        }),
+        body: JSON.stringify(inputData),
       });
 
       if (!response.ok) {
         throw new Error("Failed to get response");
       }
 
-      const data = await response.json();
-      responseContent =
-        data.message || "Sorry, I couldn't process your request.";
-
+        const data = await response.json();
+        console.log("data: ", data);
+        responseContent =
+          data.reply || "Sorry, I couldn't process your request.";
+      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
