@@ -130,6 +130,14 @@ export default function Analysis() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      console.log("Raw response:", result);
+      setAnalysis((prev) => ({ ...prev, analyzeResult: result }));
     } catch (error) {
       console.error("Error:", error);
     }
@@ -186,6 +194,13 @@ export default function Analysis() {
     </div>
   );
 
+  const AnalysisSummaryData = (
+    <div className="flex flex-col gap-2">
+      <span className="font-bold">Summary:</span>
+      <p>{analysis?.analyzeResult}</p>
+    </div>
+  );
+
   return (
     <div
       className={`bg-white flex flex-col w-full h-screen font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${
@@ -205,6 +220,10 @@ export default function Analysis() {
             text="Running Statistical Tests"
             view={analysis.hypothesisTestingResult}
           />
+        )}
+
+        {analysis?.analyzeResult && (
+          <DropDown text="Analysis Summary" view={AnalysisSummaryData} />
         )}
         <Chat />
       </div>
