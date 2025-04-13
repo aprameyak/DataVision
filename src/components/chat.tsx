@@ -16,7 +16,7 @@ export default function Chat() {
     {
       id: "1",
       content:
-        "Hello! I'm your data analysis assistant. Ask me anything about your analysis.",
+        "Hello! I'm your data analysis assistant. Ask me anything about your data.",
       role: "assistant",
       timestamp: new Date(),
     },
@@ -38,7 +38,7 @@ export default function Chat() {
     // Small delay to ensure animation works
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, 600); // Delayed to appear after the dropdowns
+    }, 250); // Delayed to appear after the dropdowns
 
     return () => clearTimeout(timer);
   }, []);
@@ -121,16 +121,15 @@ export default function Chat() {
     <div className={`border w-full m-auto rounded-lg transition-all duration-700 ease-in-out ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
       }`}>
       <div className="bg-gray-100 py-4 px-5 rounded-t-lg border-b">
-        <h3 className="font-bold text-lg text-primary">Data Analysis Assistant</h3>
+        <h3 className="text-lg text-primary font-medium">Data Analysis Assistant</h3>
       </div>
 
       <div className="h-80 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${
-              message.role === "user" ? "justify-end" : "justify-start"
-            }`}
+            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+              }`}
           >
             <div
               className={`max-w-3/4 p-3 rounded-lg ${message.role === "user"
@@ -177,7 +176,7 @@ export default function Chat() {
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyDown={handleKeyPress}
           placeholder="Type your message..."
-          className="flex-1 shadow-none"
+          className="text-primary flex-1 shadow-none"
         />
         <Button
           onClick={sendMessage}

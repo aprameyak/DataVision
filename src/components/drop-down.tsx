@@ -5,6 +5,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Loader2 } from "lucide-react";
+import Spinner from "./spinner";
 
 export default function DropDown({
   text,
@@ -16,12 +18,10 @@ export default function DropDown({
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Trigger fade-in animation after component mounts
   useEffect(() => {
-    // Small delay to ensure animation works
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, 100);
+    }, 250);
 
     return () => clearTimeout(timer);
   }, []);
@@ -32,11 +32,13 @@ export default function DropDown({
       <Accordion
         type="single"
         collapsible
-        className="border rounded-lg bg-gray-50 overflow-hidden mx-auto"
+        className="shadow-skm border rounded-lg bg-gray-50 overflow-hidden mx-auto"
       >
         <AccordionItem value={`item-${text}`}>
           <AccordionTrigger onClick={() => setIsOpen(!isOpen)} disabled={!view} className={`${isOpen ? `border-b` : ``} bg-gray-100 rounded-b-none px-5 cursor-pointer`}>
-            <p className={`${view ? "" : "loading"} text-lg font-bold`}>{text}</p>
+            <div className="flex flex-row gap-5">
+              <p className="text-lg font-medium">{text}</p>
+            </div>
           </AccordionTrigger>
           <AccordionContent className="pl-3 pr-7 w-full mt-4 ">
             {text === "Running Statistical Tests" ? (

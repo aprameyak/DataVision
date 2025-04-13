@@ -1,25 +1,106 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
-import { Upload, Loader2 } from "lucide-react";
+import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/components/footer";
+import Spinner from "@/components/spinner";
 
 export default function Home() {
   const [file, setFile] = useState<File>();
   const [isLoading, setIsLoading] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [pageLoaded, setPageLoaded] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dropzoneRef = useRef<HTMLLabelElement>(null);
 
-  // Run handleUpload when file changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPageLoaded(true);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     if (file) {
       handleUpload();
     }
   }, [file]);
+
+  // Set up drag and drop event listeners
+  useEffect(() => {
+    const dropzone = dropzoneRef.current;
+    if (!dropzone) return;
+
+    const handleDragEnter = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(true);
+    };
+
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!isDragging) setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Only set isDragging to false if we're leaving the dropzone
+      // and not entering a child element
+      if (e.currentTarget === e.target) {
+        setIsDragging(false);
+      }
+    };
+
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+
+      if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+        const droppedFile = e.dataTransfer.files[0];
+        validateAndSetFile(droppedFile);
+      }
+    };
+
+    dropzone.addEventListener("dragenter", handleDragEnter);
+    dropzone.addEventListener("dragover", handleDragOver);
+    dropzone.addEventListener("dragleave", handleDragLeave);
+    dropzone.addEventListener("drop", handleDrop);
+
+    return () => {
+      dropzone.removeEventListener("dragenter", handleDragEnter);
+      dropzone.removeEventListener("dragover", handleDragOver);
+      dropzone.removeEventListener("dragleave", handleDragLeave);
+      dropzone.removeEventListener("drop", handleDrop);
+    };
+  }, [isDragging]);
+
+  const validateAndSetFile = (selectedFile: File) => {
+    // Check if file is a CSV
+    if (
+      selectedFile.type === "text/csv" ||
+      selectedFile.name.endsWith(".csv")
+    ) {
+      setFile(selectedFile);
+      toast.success("CSV file selected", {
+        description: selectedFile.name,
+      });
+    } else {
+      // Show toast for invalid file type
+      toast.error("Invalid file type", {
+        description: "Please upload a CSV file",
+      });
+    }
+  };
 
   const uploadFile = async () => {
     const url = "/api/upload";
@@ -47,25 +128,10 @@ export default function Home() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
+      validateAndSetFile(selectedFile);
 
-      // Check if file is a CSV
-      if (
-        selectedFile.type === "text/csv" ||
-        selectedFile.name.endsWith(".csv")
-      ) {
-        setFile(selectedFile);
-        toast.success("CSV file selected", {
-          description: selectedFile.name,
-        });
-      } else {
-        // Show toast for invalid file type
-        toast.error("Invalid file type", {
-          description: "Please upload a CSV file",
-        });
-
-        // Reset the file input
-        e.target.value = "";
-      }
+      // Reset the file input
+      e.target.value = "";
     }
   };
 
@@ -108,7 +174,8 @@ export default function Home() {
       bg-white flex justify-center items-center w-full h-screen 
       font-[family-name:var(--font-geist-sans)] 
       transition-all duration-700 ease-out 
-      ${isFadingOut ? 'opacity-0 transform -translate-y-6' : 'opacity-100 transform translate-y-0'}
+      ${pageLoaded ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-6'}
+      ${isFadingOut ? 'opacity-0 transform -translate-y-6' : ''}
     `}>
       <div className="flex flex-col gap-6 row-start-2 items-center justify-center w-3/4">
         <div className="flex flex-col gap-2 items-center justify-center text-center text-primary/80">
@@ -122,7 +189,7 @@ export default function Home() {
         <div className="flex flex-col w-full max-w-md gap-4">
           {isLoading ? (
             <div className="flex flex-col gap-2 items-center justify-center text-center text-sm text-primary/80">
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Spinner />
               Processing your CSV file...
             </div>
           ) : (
@@ -136,12 +203,22 @@ export default function Home() {
                 disabled={isLoading}
               />
               <label
+                ref={dropzoneRef}
                 htmlFor="fileUpload"
-                className={`text-lg text-center flex-col gap-2 m-auto px-20 py-10 border-2 border-dashed border-primary/50 cursor-pointer flex items-center rounded-md text-primary hover:bg-primary/10 ${isLoading ? "opacity-50 pointer-events-none" : ""
-                  }`}
+                className={`
+                  text-lg text-center flex-col gap-2 m-auto px-20 py-10 
+                  border-2 border-dashed cursor-pointer flex items-center 
+                  rounded-md text-primary transition-all duration-200
+                  ${isDragging
+                    ? 'border-primary bg-primary/10 scale-105'
+                    : 'border-primary/50 hover:bg-primary/5'
+                  }
+                  ${isLoading ? "opacity-50 pointer-events-none" : ""}
+                `}
               >
-                <Upload className="h-8 aspect-square" />
-                Upload CSV
+                <Upload className={`h-8 aspect-square transition-transform duration-200 ${isDragging ? 'scale-110' : ''}`} />
+                {isDragging ? 'Drop CSV Here' : 'Upload CSV'}
+                <p className="text-sm text-gray-500 mt-1">or drag and drop file here</p>
               </label>
             </div>
           )}

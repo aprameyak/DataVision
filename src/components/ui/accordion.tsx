@@ -3,14 +3,16 @@
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "lucide-react";
-
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import Spinner from "../spinner";
 
 function Accordion({
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
 }
+
 function AccordionItem({
   className,
   ...props
@@ -29,6 +31,22 @@ function AccordionTrigger({
   children,
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+  const [prevDisabled, setPrevDisabled] = useState(props.disabled);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  useEffect(() => {
+    // If disabled state changed
+    if (prevDisabled !== props.disabled) {
+      setIsTransitioning(true);
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setPrevDisabled(props.disabled);
+      }, 300); // Match this to the duration in CSS
+
+      return () => clearTimeout(timer);
+    }
+  }, [props.disabled, prevDisabled]);
+
   return (
     <AccordionPrimitive.Header className="flex">
       <AccordionPrimitive.Trigger
@@ -39,9 +57,22 @@ function AccordionTrigger({
         )}
         {...props}
       >
-        {/* disabled now just turns off the arrow */}
         {children}
-        {!props.disabled && <ChevronDownIcon className={`my-auto text-primary pointer-events-none size-5 shrink-0 translate-y-0.5 -translate-x-5 transition-transform duration-200`} />}
+        <div className="my-auto text-primary pointer-events-none size-5 shrink-0 translate-y-0.5 -translate-x-5 transition-transform duration-200 relative flex items-center justify-center">
+          <div className={`absolute inset-0 transition-all duration-300 ease-in-out flex items-center justify-center ${(props.disabled || isTransitioning) ?
+              (prevDisabled ? 'opacity-100 scale-100' : 'opacity-0 scale-0') :
+              'opacity-0 scale-0'
+            }`}>
+            <Spinner className="ml-0.5" />
+          </div>
+
+          <div className={`transition-all duration-300 ease-in-out flex items-center justify-center ${(!props.disabled || isTransitioning) ?
+              (!prevDisabled ? 'opacity-100 scale-100' : 'opacity-0 scale-0') :
+              'opacity-0 scale-0'
+            }`}>
+            <ChevronDownIcon />
+          </div>
+        </div>
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );

@@ -21,13 +21,14 @@ export default function Analysis() {
   const id = searchParams.get("id");
 
   useEffect(() => {
-    // Trigger fade-in animation after component mounts
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     setIsVisible(true);
 
     const load = async () => {
       const cleanSummary = await cleanData();
       const designRes = await designProcedure();
-      await hypothesisTest(designRes ?? null);
+      // await hypothesisTest(designRes ?? null);
       // await summarize(
       //   cleanSummary ?? null,
       //   designRes ?? null,
@@ -187,14 +188,14 @@ export default function Analysis() {
     </div>
   );
 
-  const DesignStepData = (
+  const DesignStepData = analysis?.designResult && (
     <div className="flex flex-col gap-2">
       <span className="font-bold">Proposed Procedure:</span>
       <p>{analysis?.designResult}</p>
     </div>
   );
 
-  const AnalysisSummaryData = (
+  const AnalysisSummaryData = analysis?.analyzeResult && (
     <div className="flex flex-col gap-2">
       <span className="font-bold">Summary:</span>
       <p>{analysis?.analyzeResult}</p>
@@ -209,21 +210,10 @@ export default function Analysis() {
       <Header onClick={() => window.history.back()} />
       <div className=" w-[80%] py-10 mx-auto flex flex-col gap-10">
         <DropDown text="Cleaning Data" view={CleaningStepData} />
+        <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
+        {/* <DropDown text="Running Statistical Tests" view={analysis?.hypothesisTestingResult} /> */}
+        <DropDown text="Analysis Summary" view={AnalysisSummaryData} />
 
-        {analysis?.designResult && (
-          <DropDown text="Designing Analysis Procedure" view={DesignStepData} />
-        )}
-
-        {analysis?.hypothesisTestingResult && (
-          <DropDown
-            text="Running Statistical Tests"
-            view={analysis.hypothesisTestingResult}
-          />
-        )}
-
-        {analysis?.analyzeResult && (
-          <DropDown text="Analysis Summary" view={AnalysisSummaryData} />
-        )}
         <Chat />
       </div>
     </div>
