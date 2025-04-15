@@ -12,12 +12,9 @@ import Chat from "@/components/chat";
 
 export default function Analysis() {
   const [isVisible, setIsVisible] = useState(false);
-  const [cleanSummary, setCleanSummary] = useState<string | null>(null);
-  const [codeForCleaning, setCodeForCleaning] = useState<string | null>(null);
+  const [analysis, setAnalysis] = useState<Partial<Analysis>>();
 
   const searchParams = useSearchParams();
-  const [analysis, setAnalysis] = useState<Analysis>();
-
   const id = searchParams.get("id");
 
   useEffect(() => {
@@ -26,14 +23,10 @@ export default function Analysis() {
     setIsVisible(true);
 
     const load = async () => {
-      const cleanSummary = await cleanData();
-      const designRes = await designProcedure();
-      const hypothesisTestRes = await hypothesisTest(designRes ?? null);
-      await summarize(
-        cleanSummary,
-        designRes ?? null,
-        hypothesisTestRes ?? null
-      );
+      await cleanData();
+      await designProcedure();
+      await hypothesisTest();
+      await summarize();
     };
 
     load();
@@ -56,7 +49,6 @@ export default function Analysis() {
       }
 
       const result = await response.json();
-      console.log("TEST");
       setAnalysis((prev) => ({ ...prev, cleanResult: result }));
       return result.summary;
     } catch (error) {
@@ -66,8 +58,6 @@ export default function Analysis() {
 
   const designProcedure = async () => {
     const url = "/api/design_procedure";
-
-    console.log("DESIGN PROCEDURE: ", id);
 
     try {
       const response = await fetch(url, {
@@ -90,9 +80,10 @@ export default function Analysis() {
   };
 
   // fix endpoint
-  const hypothesisTest = async (designResult: string | null) => {
+  const hypothesisTest = async () => {
     const url = "/api/hypothesis_test";
-    console.log("DESIGN RESULT: ", designResult);
+    const designResult = analysis?.designResult;
+
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -112,21 +103,17 @@ export default function Analysis() {
     }
   };
 
-  const summarize = async (
-    cleaning_summary: string | null,
-    potential_relationships: string | null,
-    hypothesisTestingResult: any | null
-  ) => {
-    console.log("ANALYSIS: ", hypothesisTestingResult);
+  const summarize = async () => {
+    const cleanResult = analysis?.cleanResult;
+    const designResult = analysis?.designResult;
+    const hypothesisTestResult = analysis?.hypothesisTestingResult;
     const url = "/api/summarize";
     const data = {
       id: id,
-      cleaning_summary,
-      potential_relationships,
-      p_values_summary: hypothesisTestingResult.p_values,
+      cleaning_summary: cleanResult?.summary,
+      potential_relationships: designResult,
+      p_values_summary: hypothesisTestResult?.p_values,
     };
-
-    console.log("DATA: ", data);
 
     try {
       const response = await fetch(url, {
@@ -148,8 +135,10 @@ export default function Analysis() {
   };
 
   const downloadCSV = () => {
-    if (analysis?.cleanResult && analysis.cleanResult.csv) {
-      const blob = new Blob([analysis.cleanResult.csv], { type: "text/csv" });
+    const cleanResult = analysis?.cleanResult;
+
+    if (cleanResult && cleanResult.csv) {
+      const blob = new Blob([cleanResult.csv], { type: "text/csv" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -160,30 +149,19 @@ export default function Analysis() {
       console.error("No CSV data available for download");
     }
   };
-
-  useEffect(() => {
-    if (analysis?.cleanResult) {
-      setCleanSummary(analysis.cleanResult["summary"]);
-      setCodeForCleaning(analysis.cleanResult["code"]);
-    } else {
-      setCleanSummary(null);
-      setCodeForCleaning(null);
-    }
-  }, [analysis?.cleanResult]);
-
-  const CodeDisplay = ({ code }: { code: string | null }) => {
-    if (!code) {
-      return <p>No code available</p>;
-    }
-    return <SyntaxHighlighter language="javascript">{code}</SyntaxHighlighter>;
-  };
-
   const CleaningStepData = analysis?.cleanResult && (
     <div className="flex flex-col gap-2">
       <span className="font-bold">Summary:</span>
-      <p>{cleanSummary}</p>
+      <p>{analysis.cleanResult.summary}</p>
       <span className="font-bold">Code:</span>
-      <CodeDisplay code={codeForCleaning} />
+      {/* {
+        if (!code) {
+          return <p>No code available</p>;
+        } else {
+          return <SyntaxHighlighter language="javascript">{code}</SyntaxHighlighter>;
+        }
+      } */}
+      {/* <CodeDisplay code={analysis.cleanResult["code"]} /> */}
       <Button onClick={downloadCSV} className="mt-4">
         Download CSV
       </Button>
@@ -215,7 +193,7 @@ export default function Analysis() {
               className="w-full max-w-xl rounded-md border"
             />
             <p className="text-center py-2">
-              {analysis.hypothesisTestingResult.p_values[index]}
+              {analysis.hypothesisTestingResult?.p_values[index]}
             </p>
           </div>
         )
@@ -250,9 +228,8 @@ export default function Analysis() {
 
   return (
     <div
-      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
+      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"
+        }`}
     >
       <Header onClick={() => window.history.back()} />
       <div className=" w-[80%] py-10 mx-auto flex flex-col gap-10">
