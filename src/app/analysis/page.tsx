@@ -18,15 +18,15 @@ export default function Analysis() {
   const id = searchParams.get("id");
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo(0, 0);
 
     setIsVisible(true);
 
     const load = async () => {
       await cleanData();
       await designProcedure();
-      // await hypothesisTest();
-      // await summarize();
+      await hypothesisTest();
+      await summarize();
     };
 
     load();
