@@ -25,8 +25,8 @@ export default function Analysis() {
     const load = async () => {
       await cleanData();
       await designProcedure();
-      await hypothesisTest();
-      await summarize();
+      // await hypothesisTest();
+      // await summarize();
     };
 
     load();
@@ -154,14 +154,11 @@ export default function Analysis() {
       <span className="font-bold">Summary:</span>
       <p>{analysis.cleanResult.summary}</p>
       <span className="font-bold">Code:</span>
-      {/* {
-        if (!code) {
-          return <p>No code available</p>;
-        } else {
-          return <SyntaxHighlighter language="javascript">{code}</SyntaxHighlighter>;
-        }
-      } */}
-      {/* <CodeDisplay code={analysis.cleanResult["code"]} /> */}
+      {!analysis.cleanResult.code ?
+        <p>No code available</p>
+        :
+        <SyntaxHighlighter language="javascript">{analysis.cleanResult.code}</SyntaxHighlighter>
+      }
       <Button onClick={downloadCSV} className="mt-4">
         Download CSV
       </Button>
@@ -231,13 +228,12 @@ export default function Analysis() {
       className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"
         }`}
     >
-      <Header onClick={() => window.history.back()} />
+      <Header />
       <div className=" w-[80%] py-10 mx-auto flex flex-col gap-10">
         <DropDown text="Data Cleaning" view={CleaningStepData} />
         <DropDown text="Analysis Procedure" view={DesignStepData} />
         <DropDown text="Statistical Tests" view={HypothesisTestingData} />
         <DropDown text="Summary" view={AnalysisSummaryData} />
-
         <Chat />
       </div>
     </div>

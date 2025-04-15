@@ -80,9 +80,52 @@ def clean_data():
         df = pd.read_csv(get_file_path(id))
         file_path = get_file_path(id)
         cleaning_result = clean.data_clean(df, llm, file_path)
-        return cleaning_result
+        
+        # Handle if cleaning_result contains Response objects
+        if hasattr(cleaning_result, 'get_json'):
+            cleaning_result = cleaning_result.get_json()
+        
+        # Custom JSON encoder with proper NaN handling
+        import json
+        import numpy as np
+        
+        # First convert all NaN values in the cleaned_df to None
+        if 'cleaned_df' in cleaning_result and cleaning_result['cleaned_df']:
+            for record in cleaning_result['cleaned_df']:
+                for key, value in record.items():
+                    if isinstance(value, float) and np.isnan(value):
+                        record[key] = None
+        
+        # Use custom encoder for remaining NaN values that might be in other parts
+        class NpEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, np.integer):
+                    return int(obj)
+                if isinstance(obj, np.floating):
+                    return None if np.isnan(obj) else float(obj)
+                if isinstance(obj, np.ndarray):
+                    return obj.tolist()
+                if isinstance(obj, np.bool_):
+                    return bool(obj)
+                if pd.isna(obj):
+                    return None
+                try:
+                    return super(NpEncoder, self).default(obj)
+                except:
+                    return str(obj)
+        
+        # Use dumps with custom encoder then jsonify the result
+        return app.response_class(
+            response=json.dumps(cleaning_result, cls=NpEncoder),
+            status=200,
+            mimetype='application/json'
+        )
+    
     except Exception as e:
-        return f"An error occurred while processing the file: {str(e)}", 500
+        import traceback
+        app.logger.warning(f"Error in data_cleaning: {str(e)}")
+        print(traceback.format_exc())  # Print full traceback for debugging
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/design_procedure', methods=['POST'])
 def design_procedure():
