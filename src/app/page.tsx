@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Upload } from "lucide-react";
-import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/components/footer";
 import Spinner from "@/components/spinner";
@@ -92,14 +91,6 @@ export default function Home() {
       selectedFile.name.endsWith(".csv")
     ) {
       setFile(selectedFile);
-      toast.success("CSV file selected", {
-        description: selectedFile.name,
-      });
-    } else {
-      // Show toast for invalid file type
-      toast.error("Invalid file type", {
-        description: "Please upload a CSV file",
-      });
     }
   };
 
@@ -154,18 +145,12 @@ export default function Home() {
         }, 700); // Match this to your duration value
       } catch (error) {
         setIsFadingOut(false);
-        toast.error("Error processing file", {
-          description: "An unexpected error occurred",
-        });
         console.error("Error:", error);
       } finally {
         // Note: We don't reset isLoading here since we're navigating away
       }
     } else if (!file) {
       console.log("No file selected");
-      toast.error("No file selected", {
-        description: "Please select a CSV file to upload",
-      });
     }
   };
 
@@ -175,11 +160,10 @@ export default function Home() {
       bg-white flex justify-center items-center w-full h-screen 
       font-[family-name:var(--font-geist-sans)] 
       transition-all duration-700 ease-out 
-      ${
-        pageLoaded
+      ${pageLoaded
           ? "opacity-100 transform translate-y-0"
           : "opacity-0 transform translate-y-6"
-      }
+        }
       ${isFadingOut ? "opacity-0 transform -translate-y-6" : ""}
     `}
     >
@@ -215,18 +199,16 @@ export default function Home() {
                   text-lg text-center flex-col gap-2 m-auto px-20 py-10 
                   border-2 border-dashed cursor-pointer flex items-center 
                   rounded-md text-primary transition-all duration-200
-                  ${
-                    isDragging
-                      ? "border-primary bg-primary/10 scale-105"
-                      : "border-primary/50 hover:bg-primary/5"
+                  ${isDragging
+                    ? "border-primary bg-primary/10 scale-105"
+                    : "border-primary/50 hover:bg-primary/5"
                   }
                   ${isLoading ? "opacity-50 pointer-events-none" : ""}
                 `}
               >
                 <Upload
-                  className={`h-8 aspect-square transition-transform duration-200 ${
-                    isDragging ? "scale-110" : ""
-                  }`}
+                  className={`h-8 aspect-square transition-transform duration-200 ${isDragging ? "scale-110" : ""
+                    }`}
                 />
                 {isDragging ? "Drop CSV Here" : "Upload CSV"}
                 <p className="text-lg text-primary">or</p>
