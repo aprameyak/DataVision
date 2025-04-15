@@ -13,9 +13,10 @@ export default function Header({ onClick }: { onClick: () => void }) {
             >
                 <ChevronLeft style={{ scale: 2 }} />
             </Button>
-            <p className="text-4xl w-fit cursor-pointer flex items-center justify-center" onClick={onClick}>
+            <Button onClick={onClick} variant="secondary" className="shadow-none font-normal cursor-pointer text-primary flex items-center justify-center">
                 <Logo />
-            </p>
+            </Button>
         </div>
     );
 }
+
