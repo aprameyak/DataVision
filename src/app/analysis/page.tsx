@@ -9,10 +9,12 @@ import { useSearchParams } from "next/navigation";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import Chat from "@/components/chat";
+import { useDeleteFileOnExit } from "@/hooks/useDeleteFileOnExit";
 
 export default function Analysis() {
   const [isVisible, setIsVisible] = useState(false);
   const [analysis, setAnalysis] = useState<Partial<Analysis>>();
+  const [fileReady, setFileReady] = useState(false);
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -200,34 +202,7 @@ export default function Analysis() {
     </div>
   );
 
-  // Utility function to handle file deletion on page unload
-  const handleBeforeUnload = (id: string | null) => {
-    if (id) {
-      const url = "/api/delete_file";
-      const data = JSON.stringify({ id });
-
-      // Use navigator.sendBeacon for reliable file deletion
-      const blob = new Blob([data], { type: "application/json" });
-      navigator.sendBeacon(url, blob);
-      console.log(`File with ID ${id} deletion request sent.`);
-    }
-  };
-
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        handleBeforeUnload(id);
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("beforeunload", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("beforeunload", handleVisibilityChange);
-    };
-  }, [id]);
+  useDeleteFileOnExit(id);
 
   return (
     <div
