@@ -221,11 +221,11 @@ export default function Analysis() {
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    document.addEventListener("beforeunload", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleVisibilityChange);
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      document.removeEventListener("beforeunload", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleVisibilityChange);
     };
   }, [id]);
 
