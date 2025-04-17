@@ -154,11 +154,13 @@ export default function Analysis() {
       <span className="font-bold">Summary:</span>
       <p>{analysis.cleanResult.summary}</p>
       <span className="font-bold">Code:</span>
-      {!analysis.cleanResult.code ?
+      {!analysis.cleanResult.code ? (
         <p>No code available</p>
-        :
-        <SyntaxHighlighter language="javascript">{analysis.cleanResult.code}</SyntaxHighlighter>
-      }
+      ) : (
+        <SyntaxHighlighter language="javascript">
+          {analysis.cleanResult.code}
+        </SyntaxHighlighter>
+      )}
       <Button onClick={downloadCSV} className="mt-4">
         Download CSV
       </Button>
@@ -212,21 +214,24 @@ export default function Analysis() {
   };
 
   useEffect(() => {
-    const unloadHandler = () => {
-      handleBeforeUnload(id); // Pass the file ID to the function
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        handleBeforeUnload(id);
+      }
     };
 
-    window.addEventListener("beforeunload", unloadHandler);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      window.removeEventListener("beforeunload", unloadHandler);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [id]);
 
   return (
     <div
-      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${isVisible ? "opacity-100" : "opacity-0"
-        }`}
+      className={`bg-white h-full flex flex-col w-full font-[family-name:var(--font-geist-sans)] transition-opacity duration-1000 ease-in-out ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
     >
       <Header />
       <div className=" w-[80%] py-10 mx-auto flex flex-col gap-10">
