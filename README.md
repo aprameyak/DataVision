@@ -19,8 +19,6 @@
 ![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white&style=for-the-badge)
 ![Azure](https://img.shields.io/badge/Azure-0078D4?logo=microsoftazure&logoColor=white&style=for-the-badge)
 
-## 🌐 Web App: [www.data-vision.tech](http://www.data-vision.tech/)
-
 ## 🎬 Video Demo: [https://youtu.be/DR2BjuHC1mY](https://youtu.be/DR2BjuHC1mY)
 
 ## 📊 About
