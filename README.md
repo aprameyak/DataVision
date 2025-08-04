@@ -19,26 +19,26 @@
 ![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white&style=for-the-badge)
 ![Azure](https://img.shields.io/badge/Azure-0078D4?logo=microsoftazure&logoColor=white&style=for-the-badge)
 
-## 🎬 Video Demo: [https://youtu.be/DR2BjuHC1mY](https://youtu.be/DR2BjuHC1mY)
+## Video Demo: [https://youtu.be/DR2BjuHC1mY](https://youtu.be/DR2BjuHC1mY)
 
-## 📊 About
+## About
 
 **DataVision** turns raw CSV files into real‑time, AI‑powered business insights.  
 An agentic backend—built with **LangGraph** and powered by **Gemini API**—cleans data, runs hypothesis tests, and streams p‑values & richly‑styled visuals to a responsive frontend, giving small‑business owners clarity without complexity.
 
-## ✨ Features
+## Features
 
-- 🔄 **Automated Pipeline:** clean → design procedure → hypothesis testing → summarize.
-- 📈 **Statistical Insight:**
+ **Automated Pipeline:** clean → design procedure → hypothesis testing → summarize.
+ **Statistical Insight:**
   - `pandas` handles data wrangling and feature extraction.
   - `SciPy` selects and runs the most appropriate hypothesis tests.
-- 🎨 **Instant Visuals:**
+- **Instant Visuals:**
   - `Matplotlib` & `Seaborn` generate publication‑quality plots (trends, distributions, correlations).
   - All charts are serialized as SVG/PNG and streamed to the UI for immediate rendering.
-- 🤖 **AI‑Driven Exploration:** Gemini‑powered chat lets users request custom analyses or deeper dives into their data.
-- ⚡ **Real‑Time UX:** UX is snappy, intuitive, and responsive.
+- **AI‑Driven Exploration:** Gemini‑powered chat lets users request custom analyses or deeper dives into their data.
+- **Real‑Time UX:** UX is snappy, intuitive, and responsive.
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer               | Tools & Frameworks                                                                             |
 | ------------------- | ---------------------------------------------------------------------------------------------- |
