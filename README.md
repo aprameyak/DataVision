@@ -4,7 +4,7 @@
 
 DataVision takes a CSV file and runs an LLM-driven analysis on it: it cleans the data, proposes relationships worth testing, runs hypothesis tests with SciPy, and returns charts, p-values, and a plain-language summary. It was aimed at small-business owners who have data but no analyst.
 
-Built at Bitcamp 2025 by a team of four: [TN0123](https://github.com/TN0123), [aadia1234](https://github.com/aadia1234), [bobbybotbop](https://github.com/bobbybotbop), and [aprameyak](https://github.com/aprameyak). Most of the code was written by TN0123 and aadia1234.
+Built at Bitcamp 2025.
 
 Video demo: https://youtu.be/DR2BjuHC1mY
 
