@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { Input } from "@/components/ui/input";
 import { Upload } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,7 +8,7 @@ import Footer from "@/components/footer";
 import Spinner from "@/components/spinner";
 import Logo from "@/components/logo";
 
-export default function Home() {
+function HomeContent() {
   const [file, setFile] = useState<File>();
   const [isLoading, setIsLoading] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
@@ -220,5 +220,13 @@ export default function Home() {
       </div>
       <Footer />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense>
+      <HomeContent />
+    </Suspense>
   );
 }

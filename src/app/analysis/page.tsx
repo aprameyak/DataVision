@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import DropDown from "@/components/drop-down";
 import { Button } from "@/components/ui/button";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -11,7 +11,7 @@ import Header from "@/components/header";
 import Chat from "@/components/chat";
 import { useDeleteFileOnExit } from "@/hooks/useDeleteFileOnExit";
 
-export default function Analysis() {
+function AnalysisContent() {
   const [isVisible, setIsVisible] = useState(false);
   const [analysis, setAnalysis] = useState<Partial<Analysis>>();
   const [fileReady, setFileReady] = useState(false);
@@ -219,5 +219,13 @@ export default function Analysis() {
         <Chat />
       </div>
     </div>
+  );
+}
+
+export default function Analysis() {
+  return (
+    <Suspense>
+      <AnalysisContent />
+    </Suspense>
   );
 }
